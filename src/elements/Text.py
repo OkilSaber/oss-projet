@@ -22,6 +22,7 @@ class Text:
         self.font = font
         self.text_size = text_size
         self.pygame_font = pygame.font.SysFont(font, text_size)
+        print(self.text_color[0])
         self.pygame_text = self.pygame_font.render(
             self.text,
             True,

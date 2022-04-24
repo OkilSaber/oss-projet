@@ -1,6 +1,6 @@
-import constants.Assets as Assets
-import constants.Colors as Colors
 import pygame
+from constants.Assets import Assets
+from constants.Colors import Colors
 from constants.Context import Context
 from elements.Button import Button
 from elements.Rectangle import Rectangle
