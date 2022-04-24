@@ -1,4 +1,5 @@
 import json
+from shutil import ExecError
 from Button import Button
 from Context import Context
 from typing import List, Tuple
@@ -120,6 +121,19 @@ class Game:
         self.buttons.clear()
 
     def load_settings(self):
-        self.settings = json.load(open("settings.json"))
+        try:
+            self.settings = json.load(open("settings.json"))
+        except Exception as e:
+            settings = {
+                "music": 100,
+                "effects": 100,
+                "up": "up",
+                "down": "down",
+                "left": "left",
+                "right": "right"
+            }
+            settings_file = open('settings.json', 'w')
+            json.dump(settings, settings_file)
+            self.settings = settings
         self.music_volume = self.settings["music"] / 100
         self.effects_volume = self.settings["effects"] / 100
