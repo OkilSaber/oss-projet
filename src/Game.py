@@ -1,5 +1,5 @@
-from curses.textpad import rectangle
 import pygame
+import re
 from constants.Assets import Assets
 from constants.Colors import Colors
 from constants.Context import Context
@@ -132,6 +132,25 @@ class Game:
         )
 
     def create_options_menu_elements(self):
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Music Volume:",
+                text_color=Colors.dark,
+                text_position=(100, 200),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text=re.sub('[.,]', '', str(
+                    round(pygame.mixer.music.get_volume(), 1) * 10)),
+                text_color=Colors.dark,
+                text_position=(500, 200),
+                text_size=35
+            )
+        )
         self.buttons.append(
             Button(
                 on_click=Button.to_main_menu,
@@ -147,6 +166,42 @@ class Game:
                     text_color=Colors.dark,
                     text_size=35,
                     text_position=(75, 50)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.volume_down,
+                rect=Rectangle(
+                    position=(300, 190),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(50, 50),
+                ),
+                text=Text(
+                    text="-",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(315, 200)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.volume_up,
+                rect=Rectangle(
+                    position=(400, 190),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(50, 50),
+                ),
+                text=Text(
+                    text="+",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(415, 200)
                 ),
             )
         )
@@ -178,11 +233,15 @@ class Game:
     def to_options(self):
         self.context = Context.OPTIONS
         self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
         self.create_options_menu_elements()
 
     def to_main_menu(self):
         self.context = Context.MAIN_MENU
         self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
         self.create_main_menu_buttons()
 
     def load_settings(self):
@@ -202,3 +261,7 @@ class Game:
             self.settings = settings
         self.music_volume = self.settings["music"] / 100
         self.effects_volume = self.settings["effects"] / 100
+
+    def update_settings(self, key, value):
+        self.settings[key] = value
+        dump(self.settings, open('settings.json', 'w'))
