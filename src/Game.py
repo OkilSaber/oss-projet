@@ -1,3 +1,4 @@
+import json
 from Button import Button
 from Context import Context
 from typing import List, Tuple
@@ -11,6 +12,9 @@ class Game:
     screen: pygame.Surface
     context: Context
     running: bool
+    music_volume: float
+    effects_volume: float
+    settings: dict
     background_image_surface: pygame.Surface
     buttons = []
 
@@ -22,9 +26,11 @@ class Game:
         self.background_image_surface = pygame.image.load(
             assets.menu_background_image
         )
+        self.load_settings()
         pygame.mixer.init()
         pygame.mixer.music.load(assets.background_music)
         pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(self.music_volume)
 
     def create_main_menu_buttons(self):
         self.buttons.append(
@@ -112,3 +118,8 @@ class Game:
     def to_options(self):
         self.context = Context.OPTIONS
         self.buttons.clear()
+
+    def load_settings(self):
+        self.settings = json.load(open("settings.json"))
+        self.music_volume = self.settings["music"] / 100
+        self.effects_volume = self.settings["effects"] / 100
