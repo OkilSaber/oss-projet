@@ -17,9 +17,9 @@ class Game:
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
         self.context = Game.MAIN_MENU
-        self.create_buttons()
+        self.create_main_menu_buttons()
 
-    def create_buttons(self):
+    def create_main_menu_buttons(self):
         self.buttons.append(
             Button(
                 position=(200, 150),
