@@ -34,6 +34,48 @@ class Game:
                 text_position=(640, 175)
             )
         )
+        self.buttons.append(
+            Button(
+                position=(200, 300),
+                color=(colors.beige),
+                hover_color=(colors.white),
+                on_click=click,
+                size=(880, 100),
+                text="Load",
+                font="Corbel",
+                text_color=colors.dark,
+                text_size=35,
+                text_position=(640, 325)
+            )
+        )
+        self.buttons.append(
+            Button(
+                position=(200, 450),
+                color=(colors.beige),
+                hover_color=(colors.white),
+                on_click=click,
+                size=(880, 100),
+                text="Options",
+                font="Corbel",
+                text_color=colors.dark,
+                text_size=35,
+                text_position=(640, 475)
+            )
+        )
+        self.buttons.append(
+            Button(
+                position=(200, 600),
+                color=(colors.beige),
+                hover_color=(colors.white),
+                on_click=click,
+                size=(880, 100),
+                text="Quit",
+                font="Corbel",
+                text_color=colors.dark,
+                text_size=35,
+                text_position=(640, 625)
+            )
+        )
 
     def check_buttons_click(self, position: Tuple[int, int]):
         for button in self.buttons:
