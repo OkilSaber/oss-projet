@@ -23,7 +23,7 @@ class Game:
     background_image_surface: pygame.Surface
     buttons = []
     texts = []
-    rect = []
+    rectangles = []
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
@@ -44,7 +44,7 @@ class Game:
             Button(
                 on_click=Button.click,
                 rect=Rectangle(
-                    position=(200, 150),
+                    position=(200, 44),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
                     size=(880, 100),
@@ -54,7 +54,7 @@ class Game:
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(640, 175)
+                    text_position=(640, 94)
                 ),
             )
         )
@@ -62,7 +62,7 @@ class Game:
             Button(
                 on_click=Button.quit,
                 rect=Rectangle(
-                    position=(200, 300),
+                    position=(200, 188),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
                     size=(880, 100),
@@ -72,7 +72,7 @@ class Game:
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(640, 325)
+                    text_position=(640, 238)
                 ),
             )
         )
@@ -80,7 +80,7 @@ class Game:
             Button(
                 on_click=Button.to_options,
                 rect=Rectangle(
-                    position=(200, 450),
+                    position=(200, 332),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
                     size=(880, 100),
@@ -90,7 +90,25 @@ class Game:
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(640, 475)
+                    text_position=(640, 382)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.click,
+                rect=Rectangle(
+                    position=(200, 476),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(880, 100),
+                ),
+                text=Text(
+                    text="Ranking",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(640, 526)
                 ),
             )
         )
@@ -98,17 +116,17 @@ class Game:
             Button(
                 on_click=Button.quit,
                 rect=Rectangle(
-                    position=(200, 600),
+                    position=(200, 620),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
                     size=(880, 100),
                 ),
                 text=Text(
-                    text="Quit",
+                    text="Exit",
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(640, 625)
+                    text_position=(640, 670)
                 ),
             )
         )
