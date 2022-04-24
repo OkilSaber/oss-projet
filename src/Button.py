@@ -77,5 +77,4 @@ class Button:
         screen.blit(self.pygame_text, self.text_position)
 
     def quit(self, game: Game):
-        pygame.QUIT
         game.running = False

@@ -12,7 +12,6 @@ while game.running:
     game.screen.blit(bg, (0, 0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.QUIT
             game.running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse = pygame.mouse.get_pos()
