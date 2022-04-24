@@ -27,7 +27,7 @@ class Game:
                 hover_color=(colors.white),
                 on_click=click,
                 size=(880, 100),
-                text="PLAY",
+                text="Play",
                 font="Corbel",
                 text_color=colors.dark,
                 text_size=35,
