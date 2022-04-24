@@ -1,5 +1,7 @@
 import pygame
 from Game import Game
+
+
 pygame.init()
 pygame.mixer.init()
 pygame.mixer.music.load('assets/background_music.ogg')
