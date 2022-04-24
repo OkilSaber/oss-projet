@@ -20,13 +20,20 @@ class Game:
         self.create_buttons()
 
     def create_buttons(self):
-        self.buttons.append(Button(
-            position=(200, 150),
-            color=(colors.white),
-            on_click=click,
-            size=(880, 100),
-            text="PLAY",
-        ))
+        self.buttons.append(
+            Button(
+                position=(200, 150),
+                color=(colors.beige),
+                hover_color=(colors.white),
+                on_click=click,
+                size=(880, 100),
+                text="PLAY",
+                font="Corbel",
+                text_color=colors.dark,
+                text_size=35,
+                text_position=(640, 175)
+            )
+        )
 
     def check_buttons_click(self, position: Tuple[int, int]):
         for button in self.buttons:
@@ -35,6 +42,11 @@ class Game:
                     and position[1] > button.position[1] \
                     and position[1] < (button.position[1] + button.size[1]):
                 button.on_click()
+
+    def check_buttons_hover(self,
+                            position: Tuple[int, int],):
+        for button in self.buttons:
+            button.on_hover(mouse=position, screen=self.screen)
 
 
 def click():

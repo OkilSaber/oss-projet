@@ -46,3 +46,31 @@ class Button:
             ],
         )
         screen.blit(self.pygame_text, self.text_position)
+
+    def on_hover(self, mouse: Tuple[int, int], screen: pygame.Surface):
+        if mouse[0] > self.position[0] \
+                and mouse[0] < (self.position[0] + self.size[0]) \
+                and mouse[1] > self.position[1] \
+                and mouse[1] < (self.position[1] + self.size[1]):
+            pygame.draw.rect(
+                screen,
+                self.hover_color,
+                [
+                    self.position[0],
+                    self.position[1],
+                    self.size[0],
+                    self.size[1]
+                ],
+            )
+        else:
+            pygame.draw.rect(
+                screen,
+                self.color,
+                [
+                    self.position[0],
+                    self.position[1],
+                    self.size[0],
+                    self.size[1]
+                ],
+            )
+        screen.blit(self.pygame_text, self.text_position)
