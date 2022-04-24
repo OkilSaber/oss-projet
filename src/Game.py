@@ -10,13 +10,23 @@ class Game:
     screen: pygame.Surface
     context: Context
     running: bool
+    background_image: str
+    background_image_surface: pygame.Surface
+    background_music: str
+    buttons = []
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
-        self.context = Game.MAIN_MENU
+        self.context = Context.MAIN_MENU
         self.create_main_menu_buttons()
-        self.buttons = []
         self.running = True
+        self.background_image = "assets/menu_background.png"
+        self.background_music = "assets/background_music.ogg"
+        self.background_image_surface = pygame.image.load(
+            self.background_image)
+        pygame.mixer.init()
+        pygame.mixer.music.load(self.background_music)
+        pygame.mixer.music.play(-1)
 
     def create_main_menu_buttons(self):
         self.buttons.append(
@@ -24,7 +34,7 @@ class Game:
                 position=(200, 150),
                 color=(colors.beige),
                 hover_color=(colors.white),
-                on_click=click,
+                on_click=Button.click,
                 size=(880, 100),
                 text="Play",
                 font="Corbel",
@@ -38,7 +48,7 @@ class Game:
                 position=(200, 300),
                 color=(colors.beige),
                 hover_color=(colors.white),
-                on_click=click,
+                on_click=Button.quit,
                 size=(880, 100),
                 text="Load",
                 font="Corbel",
@@ -52,7 +62,7 @@ class Game:
                 position=(200, 450),
                 color=(colors.beige),
                 hover_color=(colors.white),
-                on_click=click,
+                on_click=Button.quit,
                 size=(880, 100),
                 text="Options",
                 font="Corbel",
@@ -89,6 +99,16 @@ class Game:
         for button in self.buttons:
             button.on_hover(mouse=position, screen=self.screen)
 
+    def change_background_image(self, background_image: str):
+        self.background_image = background_image
+        self.background_image_surface = pygame.image.load(background_image)
 
-def click():
-    print("click")
+    def change_background_music(self, background_music: str):
+        self.background_music = background_music
+        pygame.mixer.stop()
+        pygame.mixer.music.load(self.background_music)
+        pygame.mixer.music.play(-1)
+
+    def play_sound(self, sound: str):
+        sound = pygame.mixer.Sound(sound)
+        sound.play()

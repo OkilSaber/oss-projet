@@ -1,15 +1,10 @@
+from Game import Game
 import pygame
-import Game
-
 
 pygame.init()
-pygame.mixer.init()
-pygame.mixer.music.load('assets/background_music.ogg')
-pygame.mixer.music.play(-1)
 game = Game()
-bg = pygame.image.load("assets/menu_background.png")
 while game.running:
-    game.screen.blit(bg, (0, 0))
+    game.screen.blit(game.background_image_surface, (0, 0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game.running = False

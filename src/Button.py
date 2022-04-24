@@ -1,5 +1,4 @@
 from typing import Tuple
-import Game
 import pygame
 
 
@@ -76,5 +75,8 @@ class Button:
             )
         screen.blit(self.pygame_text, self.text_position)
 
-    def quit(self, game: Game):
+    def quit(self, game):
         game.running = False
+
+    def click(self, game):
+        game.play_sound("assets/background_music.ogg")
