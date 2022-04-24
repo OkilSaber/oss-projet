@@ -67,7 +67,7 @@ class Game:
                 position=(200, 600),
                 color=(colors.beige),
                 hover_color=(colors.white),
-                on_click=click,
+                on_click=Button.quit,
                 size=(880, 100),
                 text="Quit",
                 font="Corbel",
@@ -83,7 +83,7 @@ class Game:
                     and position[0] < (button.position[0] + button.size[0]) \
                     and position[1] > button.position[1] \
                     and position[1] < (button.position[1] + button.size[1]):
-                button.on_click()
+                button.on_click(self=button, game=self)
 
     def check_buttons_hover(self,
                             position: Tuple[int, int],):
