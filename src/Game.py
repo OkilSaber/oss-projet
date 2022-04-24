@@ -113,7 +113,7 @@ class Game:
             )
         )
 
-    def create_options_menu_buttons(self):
+    def create_options_menu_elements(self):
         self.buttons.append(
             Button(
                 on_click=Button.to_main_menu,
@@ -160,7 +160,7 @@ class Game:
     def to_options(self):
         self.context = Context.OPTIONS
         self.buttons.clear()
-        self.create_options_menu_buttons()
+        self.create_options_menu_elements()
 
     def to_main_menu(self):
         self.context = Context.MAIN_MENU
