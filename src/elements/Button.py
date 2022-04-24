@@ -1,8 +1,7 @@
-from typing import Tuple
 import pygame
-
-from Rectangle import Rectangle
-from Text import Text
+from elements.Rectangle import Rectangle
+from elements.Text import Text
+from typing import Tuple
 
 
 class Button:

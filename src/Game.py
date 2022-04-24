@@ -1,12 +1,12 @@
-import json
-from Button import Button
-from Context import Context
-from Rectangle import Rectangle
-from Text import Text
-from typing import List, Tuple
-import constants.assets as assets
-import constants.colors as colors
+import constants.Assets as Assets
+import constants.Colors as Colors
 import pygame
+from constants.Context import Context
+from elements.Button import Button
+from elements.Rectangle import Rectangle
+from elements.Text import Text
+from json import load, dump
+from typing import List, Tuple
 
 
 class Game:
@@ -27,11 +27,11 @@ class Game:
         self.create_main_menu_buttons()
         self.running = True
         self.background_image_surface = pygame.image.load(
-            assets.menu_background_image
+            Assets.menu_background_image
         )
         self.load_settings()
         pygame.mixer.init()
-        pygame.mixer.music.load(assets.background_music)
+        pygame.mixer.music.load(Assets.background_music)
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(self.music_volume)
 
@@ -41,14 +41,14 @@ class Game:
                 on_click=Button.click,
                 rect=Rectangle(
                     position=(200, 150),
-                    color=(colors.beige),
-                    hover_color=(colors.white),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
                     size=(880, 100),
                 ),
                 text=Text(
                     text="Play",
                     font="Corbel",
-                    text_color=colors.dark,
+                    text_color=Colors.dark,
                     text_size=35,
                     text_position=(640, 175)
                 ),
@@ -59,14 +59,14 @@ class Game:
                 on_click=Button.quit,
                 rect=Rectangle(
                     position=(200, 300),
-                    color=(colors.beige),
-                    hover_color=(colors.white),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
                     size=(880, 100),
                 ),
                 text=Text(
                     text="Load",
                     font="Corbel",
-                    text_color=colors.dark,
+                    text_color=Colors.dark,
                     text_size=35,
                     text_position=(640, 325)
                 ),
@@ -77,14 +77,14 @@ class Game:
                 on_click=Button.to_options,
                 rect=Rectangle(
                     position=(200, 450),
-                    color=(colors.beige),
-                    hover_color=(colors.white),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
                     size=(880, 100),
                 ),
                 text=Text(
                     text="Options",
                     font="Corbel",
-                    text_color=colors.dark,
+                    text_color=Colors.dark,
                     text_size=35,
                     text_position=(640, 475)
                 ),
@@ -95,14 +95,14 @@ class Game:
                 on_click=Button.quit,
                 rect=Rectangle(
                     position=(200, 600),
-                    color=(colors.beige),
-                    hover_color=(colors.white),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
                     size=(880, 100),
                 ),
                 text=Text(
                     text="Quit",
                     font="Corbel",
-                    text_color=colors.dark,
+                    text_color=Colors.dark,
                     text_size=35,
                     text_position=(640, 625)
                 ),
@@ -115,14 +115,14 @@ class Game:
                 on_click=Button.to_main_menu,
                 rect=Rectangle(
                     position=(20, 20),
-                    color=(colors.beige),
-                    hover_color=(colors.white),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
                     size=(200, 100),
                 ),
                 text=Text(
                     text="Back",
                     font="Corbel",
-                    text_color=colors.dark,
+                    text_color=Colors.dark,
                     text_size=35,
                     text_position=(75, 50)
                 ),
@@ -161,7 +161,7 @@ class Game:
 
     def load_settings(self):
         try:
-            self.settings = json.load(open("settings.json"))
+            self.settings = load(open("settings.json"))
         except Exception as e:
             settings = {
                 "music": 100,
@@ -172,7 +172,7 @@ class Game:
                 "right": "right"
             }
             settings_file = open('settings.json', 'w')
-            json.dump(settings, settings_file)
+            dump(settings, settings_file)
             self.settings = settings
         self.music_volume = self.settings["music"] / 100
         self.effects_volume = self.settings["effects"] / 100

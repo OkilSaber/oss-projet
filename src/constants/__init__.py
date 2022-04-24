@@ -1,2 +1,2 @@
-from . import assets
-from . import colors
+from . import Assets
+from . import Colors

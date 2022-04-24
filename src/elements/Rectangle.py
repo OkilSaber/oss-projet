@@ -1,5 +1,5 @@
-from typing import Tuple
 import pygame
+from typing import Tuple
 
 
 class Rectangle:
