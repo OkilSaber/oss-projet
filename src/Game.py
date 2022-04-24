@@ -1,23 +1,22 @@
-from typing import List, Tuple
-
-import pygame
-import colors
 from Button import Button
+from Context import Context
+from typing import List, Tuple
+import colors
+import pygame
 
 
 class Game:
-    MAIN_MENU = 1
-    IN_GAME = 2
-    PAUSE = 3
-    OPTIONS = 4
     buttons: List[Button]
-    buttons = []
-    running = True
+    screen: pygame.Surface
+    context: Context
+    running: bool
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
         self.context = Game.MAIN_MENU
         self.create_main_menu_buttons()
+        self.buttons = []
+        self.running = True
 
     def create_main_menu_buttons(self):
         self.buttons.append(
