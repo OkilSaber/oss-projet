@@ -91,6 +91,23 @@ class Game:
             )
         )
 
+    def create_options_menu_buttons(self):
+        self.buttons.append(
+            Button(
+                position=(20, 20),
+                color=(colors.beige),
+                hover_color=(colors.white),
+                on_click=Button.to_main_menu,
+                size=(200, 100),
+                text="Back",
+                font="Corbel",
+                text_color=colors.dark,
+                text_size=35,
+                text_position=(75, 50)
+            )
+        )
+
+
     def check_buttons_click(self, position: Tuple[int, int]):
         for button in self.buttons:
             if position[0] > button.position[0] \
@@ -119,6 +136,12 @@ class Game:
     def to_options(self):
         self.context = Context.OPTIONS
         self.buttons.clear()
+        self.create_options_menu_buttons()
+
+    def to_main_menu(self):
+        self.context = Context.MAIN_MENU
+        self.buttons.clear()
+        self.create_main_menu_buttons()
 
     def load_settings(self):
         try:

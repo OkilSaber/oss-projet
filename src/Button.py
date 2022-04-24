@@ -85,5 +85,9 @@ class Button:
         game.play_sound("assets/button_click.mp3")
         game.to_options()
 
+    def to_main_menu(self, game):
+        game.play_sound("assets/button_click.mp3")
+        game.to_main_menu()
+
     def click(self, game):
         game.play_sound("assets/button_click.mp3")
