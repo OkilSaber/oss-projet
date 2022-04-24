@@ -1,3 +1,4 @@
+from curses.textpad import rectangle
 import pygame
 from constants.Assets import Assets
 from constants.Colors import Colors
@@ -11,7 +12,8 @@ from typing import List, Tuple
 
 class Game:
     buttons: List[Button]
-    text: List[Text]
+    texts: List[Text]
+    rectangles: List[Rectangle]
     screen: pygame.Surface
     context: Context
     running: bool
@@ -20,6 +22,8 @@ class Game:
     settings: dict
     background_image_surface: pygame.Surface
     buttons = []
+    texts = []
+    rect = []
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
@@ -133,7 +137,11 @@ class Game:
         for button in self.buttons:
             button.check_click(game=self, position=position)
 
-    def draw_buttons(self, position: Tuple[int, int]):
+    def draw_elements(self, position: Tuple[int, int]):
+        for rect in self.rectangles:
+            rect.draw(screen=self.screen, color=rect.color)
+        for text in self.texts:
+            text.draw(screen=self.screen)
         for button in self.buttons:
             button.on_hover(mouse=position, screen=self.screen)
 
