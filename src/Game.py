@@ -1,7 +1,8 @@
 import json
-from shutil import ExecError
 from Button import Button
 from Context import Context
+from Rectangle import Rectangle
+from Text import Text
 from typing import List, Tuple
 import constants.assets as assets
 import constants.colors as colors
@@ -10,6 +11,7 @@ import pygame
 
 class Game:
     buttons: List[Button]
+    text: List[Text]
     screen: pygame.Surface
     context: Context
     running: bool
@@ -36,88 +38,102 @@ class Game:
     def create_main_menu_buttons(self):
         self.buttons.append(
             Button(
-                position=(200, 150),
-                color=(colors.beige),
-                hover_color=(colors.white),
                 on_click=Button.click,
-                size=(880, 100),
-                text="Play",
-                font="Corbel",
-                text_color=colors.dark,
-                text_size=35,
-                text_position=(640, 175)
+                rect=Rectangle(
+                    position=(200, 150),
+                    color=(colors.beige),
+                    hover_color=(colors.white),
+                    size=(880, 100),
+                ),
+                text=Text(
+                    text="Play",
+                    font="Corbel",
+                    text_color=colors.dark,
+                    text_size=35,
+                    text_position=(640, 175)
+                ),
             )
         )
         self.buttons.append(
             Button(
-                position=(200, 300),
-                color=(colors.beige),
-                hover_color=(colors.white),
                 on_click=Button.quit,
-                size=(880, 100),
-                text="Load",
-                font="Corbel",
-                text_color=colors.dark,
-                text_size=35,
-                text_position=(640, 325)
+                rect=Rectangle(
+                    position=(200, 300),
+                    color=(colors.beige),
+                    hover_color=(colors.white),
+                    size=(880, 100),
+                ),
+                text=Text(
+                    text="Load",
+                    font="Corbel",
+                    text_color=colors.dark,
+                    text_size=35,
+                    text_position=(640, 325)
+                ),
             )
         )
         self.buttons.append(
             Button(
-                position=(200, 450),
-                color=(colors.beige),
-                hover_color=(colors.white),
                 on_click=Button.to_options,
-                size=(880, 100),
-                text="Options",
-                font="Corbel",
-                text_color=colors.dark,
-                text_size=35,
-                text_position=(640, 475)
+                rect=Rectangle(
+                    position=(200, 450),
+                    color=(colors.beige),
+                    hover_color=(colors.white),
+                    size=(880, 100),
+                ),
+                text=Text(
+                    text="Options",
+                    font="Corbel",
+                    text_color=colors.dark,
+                    text_size=35,
+                    text_position=(640, 475)
+                ),
             )
         )
         self.buttons.append(
             Button(
-                position=(200, 600),
-                color=(colors.beige),
-                hover_color=(colors.white),
                 on_click=Button.quit,
-                size=(880, 100),
-                text="Quit",
-                font="Corbel",
-                text_color=colors.dark,
-                text_size=35,
-                text_position=(640, 625)
+                rect=Rectangle(
+                    position=(200, 600),
+                    color=(colors.beige),
+                    hover_color=(colors.white),
+                    size=(880, 100),
+                ),
+                text=Text(
+                    text="Quit",
+                    font="Corbel",
+                    text_color=colors.dark,
+                    text_size=35,
+                    text_position=(640, 625)
+                ),
             )
         )
 
     def create_options_menu_buttons(self):
         self.buttons.append(
             Button(
-                position=(20, 20),
-                color=(colors.beige),
-                hover_color=(colors.white),
                 on_click=Button.to_main_menu,
-                size=(200, 100),
-                text="Back",
-                font="Corbel",
-                text_color=colors.dark,
-                text_size=35,
-                text_position=(75, 50)
+                rect=Rectangle(
+                    position=(20, 20),
+                    color=(colors.beige),
+                    hover_color=(colors.white),
+                    size=(200, 100),
+                ),
+                text=Text(
+                    text="Back",
+                    font="Corbel",
+                    text_color=colors.dark,
+                    text_size=35,
+                    text_position=(75, 50)
+                ),
             )
         )
 
-
     def check_buttons_click(self, position: Tuple[int, int]):
         for button in self.buttons:
-            if position[0] > button.position[0] \
-                    and position[0] < (button.position[0] + button.size[0]) \
-                    and position[1] > button.position[1] \
-                    and position[1] < (button.position[1] + button.size[1]):
-                button.on_click(self=button, game=self)
+            button.check_click(game=self, position=position)
 
-    def check_buttons_hover(self,
-                            position: Tuple[int, int],):
+    def draw_buttons(self, position: Tuple[int, int]):
         for button in self.buttons:
             button.on_hover(mouse=position, screen=self.screen)
 

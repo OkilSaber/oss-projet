@@ -11,7 +11,5 @@ while game.running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse = pygame.mouse.get_pos()
             game.check_buttons_click(mouse)
-    for button in game.buttons:
-        button.draw(screen=game.screen)
-    game.check_buttons_hover(position=pygame.mouse.get_pos())
+    game.draw_buttons(position=pygame.mouse.get_pos())
     pygame.display.update()
