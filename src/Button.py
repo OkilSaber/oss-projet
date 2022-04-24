@@ -1,6 +1,8 @@
 from typing import Tuple
 import pygame
 
+from Context import Context
+
 
 class Button:
     def __init__(
@@ -76,7 +78,12 @@ class Button:
         screen.blit(self.pygame_text, self.text_position)
 
     def quit(self, game):
+        game.play_sound("assets/button_click.mp3")
         game.running = False
 
+    def to_options(self, game):
+        game.play_sound("assets/button_click.mp3")
+        game.to_options()
+
     def click(self, game):
-        game.play_sound("assets/background_music.ogg")
+        game.play_sound("assets/button_click.mp3")

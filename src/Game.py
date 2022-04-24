@@ -1,7 +1,8 @@
 from Button import Button
 from Context import Context
 from typing import List, Tuple
-import colors
+import constants.assets as assets
+import constants.colors as colors
 import pygame
 
 
@@ -10,9 +11,7 @@ class Game:
     screen: pygame.Surface
     context: Context
     running: bool
-    background_image: str
     background_image_surface: pygame.Surface
-    background_music: str
     buttons = []
 
     def __init__(self):
@@ -20,12 +19,11 @@ class Game:
         self.context = Context.MAIN_MENU
         self.create_main_menu_buttons()
         self.running = True
-        self.background_image = "assets/menu_background.png"
-        self.background_music = "assets/background_music.ogg"
         self.background_image_surface = pygame.image.load(
-            self.background_image)
+            assets.menu_background_image
+        )
         pygame.mixer.init()
-        pygame.mixer.music.load(self.background_music)
+        pygame.mixer.music.load(assets.background_music)
         pygame.mixer.music.play(-1)
 
     def create_main_menu_buttons(self):
@@ -62,7 +60,7 @@ class Game:
                 position=(200, 450),
                 color=(colors.beige),
                 hover_color=(colors.white),
-                on_click=Button.quit,
+                on_click=Button.to_options,
                 size=(880, 100),
                 text="Options",
                 font="Corbel",
@@ -100,15 +98,17 @@ class Game:
             button.on_hover(mouse=position, screen=self.screen)
 
     def change_background_image(self, background_image: str):
-        self.background_image = background_image
         self.background_image_surface = pygame.image.load(background_image)
 
     def change_background_music(self, background_music: str):
-        self.background_music = background_music
         pygame.mixer.stop()
-        pygame.mixer.music.load(self.background_music)
+        pygame.mixer.music.load(background_music)
         pygame.mixer.music.play(-1)
 
     def play_sound(self, sound: str):
         sound = pygame.mixer.Sound(sound)
         sound.play()
+
+    def to_options(self):
+        self.context = Context.OPTIONS
+        self.buttons.clear()
