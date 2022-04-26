@@ -21,25 +21,21 @@ class Button:
         return
 
     def check_click(self, game, position: Tuple[int, int]):
-        if position[0] > self.rect.position[0] \
-                and position[0] < (self.rect.position[0] + self.rect.size[0]) \
-                and position[1] > self.rect.position[1] \
-                and position[1] < (self.rect.position[1] + self.rect.size[1]):
+        if (self.rect.rectObject.collidepoint(position)):
             self.on_click(self=self, game=game)
 
-    def draw(self, screen: pygame.Surface):
-        self.rect.draw(screen=screen, )
+    def draw(self, screen: pygame.Surface, color: Tuple[int, int, int]):
+        self.rect.draw(screen=screen, color=color)
         self.text.draw(screen=screen)
 
     def on_hover(self, mouse: Tuple[int, int], screen: pygame.Surface):
-        if mouse[0] > self.rect.position[0] \
-                and mouse[0] < (self.rect.position[0] + self.rect.size[0]) \
-                and mouse[1] > self.rect.position[1] \
-                and mouse[1] < (self.rect.position[1] + self.rect.size[1]):
-            self.rect.draw(screen=screen, color=self.rect.hover_color)
-        else:
-            self.rect.draw(screen=screen, color=self.rect.color)
-        self.text.draw(screen=screen)
+        try:
+            if(self.rect.rectObject.collidepoint(mouse)):
+                self.draw(screen=screen, color=self.rect.hover_color)
+            else:
+                self.draw(screen=screen, color=self.rect.color)
+        except Exception as e:
+            print(e)
 
     def quit(self, game):
         game.play_sound("assets/button_click.mp3")
