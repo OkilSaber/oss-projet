@@ -1,8 +1,4 @@
-import enum
-
-
 class Colors():
-
     white = (255, 255, 255)
     light = (170, 170, 170)
     dark = (100, 100, 100)

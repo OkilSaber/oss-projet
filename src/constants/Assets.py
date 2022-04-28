@@ -1,6 +1,3 @@
-import enum
-
-
 class Assets():
     button_click_sound = "assets/button_click.mp3"
     background_music = "assets/background_music.ogg"
