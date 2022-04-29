@@ -6,6 +6,7 @@ from constants.Context import Context
 from elements.Button import Button
 from elements.Rectangle import Rectangle
 from elements.Text import Text
+import Map
 from json import load, dump
 from typing import List, Tuple
 
@@ -60,7 +61,7 @@ class Game:
         )
         self.buttons.append(
             Button(
-                on_click=Button.quit,
+                on_click=Button.to_load,
                 rect=Rectangle(
                     position=(200, 188),
                     color=(Colors.beige),
@@ -205,6 +206,72 @@ class Game:
                 ),
             )
         )
+    
+    def create_loadable_maps_menu(self, map_list):
+        self.buttons.append(
+            Button(
+                on_click=Button.to_main_menu,
+                rect=Rectangle(
+                    position=(20, 20),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(200, 100),
+                ),
+                text=Text(
+                    text="Back",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(75, 50)
+                ),
+            )
+        )
+
+        y = 200
+        for map in map_list:
+            map_name_display = "Map: %s || Date: %s" % (map[0].upper(), map[1].strftime("%m/%d/%Y, %H:%M:%S"))
+            self.buttons.append(
+                Button(
+                    on_click=Button.play_this_map,
+                    rect=Rectangle(
+                        position=(100, y),
+                        color=(Colors.beige),
+                        hover_color=(Colors.white),
+                        size=(880, 100),
+                    ),
+                    text=Text(
+                        text=map_name_display,
+                        font="Corbel",
+                        text_color=Colors.dark,
+                        text_size=35,
+                        text_position=(120, y + 30)
+                    ),
+                    metadata=map[0]
+                )
+            )
+
+            self.buttons.append(
+                Button(
+                    on_click=Button.delete_map,
+                    rect=Rectangle(
+                        position=(990, y + 5),
+                        color=(Colors.red),
+                        hover_color=(Colors.light_red),
+                        size=(110, 90),
+                    ),
+                    text=Text(
+                        text="Delete",
+                        font="Corbel",
+                        text_color=Colors.white,
+                        text_size=35,
+                        text_position=(1000, y + 30)
+                    ),
+                    metadata=map[0]
+                )
+            )
+
+            y+= 120
+
 
     def check_buttons_click(self, position: Tuple[int, int]):
         for button in self.buttons:
@@ -236,6 +303,22 @@ class Game:
         self.rectangles.clear()
         self.texts.clear()
         self.create_options_menu_elements()
+    
+    def to_load(self):
+        self.context = Context.LOAD_MAP
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        map_list = Map.list_maps()
+        self.create_loadable_maps_menu(map_list)
+    
+    def delete_map(self, map_name):
+        Map.delete_map(map_name)
+        self.to_load()
+    
+    def play_game_from_load(self, map_name):
+        map = Map.load_map(map_name)
+        print("map: ", map_name, "\n", map)
 
     def to_main_menu(self):
         self.context = Context.MAIN_MENU

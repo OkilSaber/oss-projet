@@ -14,10 +14,12 @@ class Button:
         rect: Rectangle,
         text: Text,
         on_click,
+        metadata=None,
     ):
         self.rect = rect
         self.text = text
         self.on_click = on_click
+        self.metadata = metadata
         return
 
     def check_click(self, game, position: Tuple[int, int]):
@@ -44,10 +46,22 @@ class Button:
     def to_options(self, game):
         game.play_sound("assets/button_click.mp3")
         game.to_options()
+    
+    def to_load(self, game):
+        game.play_sound("assets/button_click.mp3")
+        game.to_load()
 
     def to_main_menu(self, game):
         game.play_sound("assets/button_click.mp3")
         game.to_main_menu()
+    
+    def delete_map(self, game):
+        game.play_sound("assets/button_click.mp3")
+        game.delete_map(self.metadata)
+    
+    def play_this_map(self, game):
+        game.play_sound("assets/button_click.mp3")
+        game.play_game_from_load(self.metadata)
 
     def volume_up(self, game):
         current_volume = pygame.mixer.music.get_volume()

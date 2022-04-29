@@ -7,3 +7,5 @@ class Colors():
     teal = (56, 119, 128)
     timberwolf = (219, 212, 211)
     amaranth = (232, 49, 81)
+    red = (209, 26, 42)
+    light_red = (255, 75, 91 )
