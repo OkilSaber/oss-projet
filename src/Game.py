@@ -261,15 +261,15 @@ class Game:
         )
         self.buttons.append(
             Button(
-                on_click=print("test"),
+                on_click=Button.change_context_up,
                 rect=Rectangle(
                     position=(270, 345),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
-                    size=(100, 40),
+                    size=(160, 40),
                 ),
                 text=Text(
-                    text="W",
+                    text=self.settings["up"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
@@ -279,15 +279,15 @@ class Game:
         )
         self.buttons.append(
             Button(
-                on_click=print("test"),
+                on_click=Button.change_context_down,
                 rect=Rectangle(
                     position=(270, 395),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
-                    size=(100, 40),
+                    size=(160, 40),
                 ),
                 text=Text(
-                    text="S",
+                    text=self.settings["down"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
@@ -297,15 +297,15 @@ class Game:
         )
         self.buttons.append(
             Button(
-                on_click=print("test"),
+                on_click=Button.change_context_left,
                 rect=Rectangle(
                     position=(270, 445),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
-                    size=(100, 40),
+                    size=(160, 40),
                 ),
                 text=Text(
-                    text="A",
+                    text=self.settings["left"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
@@ -315,15 +315,15 @@ class Game:
         )
         self.buttons.append(
             Button(
-                on_click=print("test"),
+                on_click=Button.change_context_right,
                 rect=Rectangle(
                     position=(270, 495),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
-                    size=(100, 40),
+                    size=(160, 40),
                 ),
                 text=Text(
-                    text="D",
+                    text=self.settings["right"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
@@ -333,15 +333,15 @@ class Game:
         )
         self.buttons.append(
             Button(
-                on_click=print("test"),
+                on_click=Button.change_context_pause,
                 rect=Rectangle(
                     position=(270, 545),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
-                    size=(100, 40),
+                    size=(160, 40),
                 ),
                 text=Text(
-                    text="Esc",
+                    text=self.settings["pause"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
@@ -409,3 +409,48 @@ class Game:
     def update_settings(self, key, value):
         self.settings[key] = value
         dump(self.settings, open('settings.json', 'w'))
+
+    def change_binding_up(self, key):
+        self.update_settings("up", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_down(self, key):
+        self.update_settings("down", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_left(self, key):
+        self.update_settings("left", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_right(self, key):
+        self.update_settings("right", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_pause(self, key):
+        self.update_settings("pause", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
