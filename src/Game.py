@@ -26,7 +26,7 @@ class Game:
     texts = []
     rectangles = []
     map = []
-    map_img = []
+    fruits = []
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
@@ -37,7 +37,6 @@ class Game:
             Assets.menu_background_image
         )
         self.load_settings()
-        self.map = None
         pygame.mixer.init()
         pygame.mixer.music.load(Assets.background_music)
         pygame.mixer.music.play(-1)
@@ -289,19 +288,23 @@ class Game:
             )
         )
 
-        block_y = start_y
-        for i, row in enumerate(self.map):
-            block_x = start_x
-            for j, _ in enumerate(row):
-                img = Map.get_image_to_display(self.map, i, j)
-                if img != None:
-                    self.map_img.append((
-                        pygame.transform.scale(pygame.image.load(img), (17, 17)),
-                        block_x,
-                        block_y
-                    ))
-                block_x += 17
-            block_y += 17
+        y = start_y
+        for row in self.map:
+            x = start_x
+            for block in row:
+                if block in ["h", "s"]:
+                    self.rectangles.append(
+                        Rectangle(
+                            position=(x, y),
+                            size=(16, 16),
+                            color=(Colors.red) if block == "h" else (Colors.dark),
+                            hover_color=(Colors.red) if block == "h" else (Colors.dark),
+                        )
+                    )
+                elif block == "f":
+                    self.fruits.append((x, y))
+                x += 17
+            y += 17
 
 
     def check_buttons_click(self, position: Tuple[int, int]):
@@ -313,8 +316,8 @@ class Game:
             rect.draw(screen=self.screen, color=rect.color)
         for text in self.texts:
             text.draw(screen=self.screen)
-        for map_block in self.map_img:
-            self.screen.blit(map_block[0], (map_block[1], map_block[2]))
+        for fruit in self.fruits:
+            self.screen.blit(pygame.transform.scale(pygame.image.load(Assets.apple_image),(17,17)), (fruit[0], fruit[1]))
         for button in self.buttons:
             button.on_hover(mouse=position, screen=self.screen)
 
@@ -335,6 +338,7 @@ class Game:
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
+        self.fruits = []
         self.create_options_menu_elements()
     
     def to_load(self):
@@ -342,6 +346,7 @@ class Game:
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
+        self.fruits = []
         map_list = Map.list_maps()
         self.create_loadable_maps_menu(map_list)
     
@@ -354,6 +359,7 @@ class Game:
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
+        self.fruits = []
         self.map = Map.load_map(map_name)
         self.display_map()
 
@@ -363,11 +369,12 @@ class Game:
             self.map.append(list("_" * Map.SIZE))
         self.map[int(Map.SIZE/2)][int(Map.SIZE/2)] = "h"
         self.map[int(Map.SIZE/2)+1][int(Map.SIZE/2)] = "s"
-        self.map[int(Map.SIZE/2)+2][int(Map.SIZE/2)] = "t"
+        self.map[int(Map.SIZE/2)+2][int(Map.SIZE/2)] = "s"
         self.context = Context.IN_GAME
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
+        self.fruits = []
         self.display_map()
 
     def to_main_menu(self):
@@ -375,6 +382,7 @@ class Game:
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
+        self.fruits = []
         self.create_main_menu_buttons()
 
     def load_settings(self):
