@@ -62,6 +62,10 @@ class Button:
     def play_this_map(self, game):
         game.play_sound("assets/button_click.mp3")
         game.play_game_from_load(self.metadata)
+    
+    def new_game(self, game):
+        game.play_sound("assets/button_click.mp3")
+        game.new_game()
 
     def volume_up(self, game):
         current_volume = pygame.mixer.music.get_volume()

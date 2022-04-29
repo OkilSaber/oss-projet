@@ -25,6 +25,8 @@ class Game:
     buttons = []
     texts = []
     rectangles = []
+    map = []
+    map_img = []
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
@@ -35,6 +37,7 @@ class Game:
             Assets.menu_background_image
         )
         self.load_settings()
+        self.map = None
         pygame.mixer.init()
         pygame.mixer.music.load(Assets.background_music)
         pygame.mixer.music.play(-1)
@@ -43,7 +46,7 @@ class Game:
     def create_main_menu_buttons(self):
         self.buttons.append(
             Button(
-                on_click=Button.click,
+                on_click=Button.new_game,
                 rect=Rectangle(
                     position=(200, 44),
                     color=(Colors.beige),
@@ -271,6 +274,34 @@ class Game:
             )
 
             y+= 120
+        
+    def display_map(self):
+        if self.map == None:
+            return
+        start_x = (1280-(17*40))/2
+        start_y = ((720-(17*40))/2)
+        self.rectangles.append(
+            Rectangle(
+                position=(start_x, start_y),
+                color=(Colors.white),
+                hover_color=None,
+                size=(17*40, 17*40),
+            )
+        )
+
+        block_y = start_y
+        for i, row in enumerate(self.map):
+            block_x = start_x
+            for j, _ in enumerate(row):
+                img = Map.get_image_to_display(self.map, i, j)
+                if img != None:
+                    self.map_img.append((
+                        pygame.transform.scale(pygame.image.load(img), (17, 17)),
+                        block_x,
+                        block_y
+                    ))
+                block_x += 17
+            block_y += 17
 
 
     def check_buttons_click(self, position: Tuple[int, int]):
@@ -282,6 +313,8 @@ class Game:
             rect.draw(screen=self.screen, color=rect.color)
         for text in self.texts:
             text.draw(screen=self.screen)
+        for map_block in self.map_img:
+            self.screen.blit(map_block[0], (map_block[1], map_block[2]))
         for button in self.buttons:
             button.on_hover(mouse=position, screen=self.screen)
 
@@ -317,8 +350,25 @@ class Game:
         self.to_load()
     
     def play_game_from_load(self, map_name):
-        map = Map.load_map(map_name)
-        print("map: ", map_name, "\n", map)
+        self.context = Context.IN_GAME
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.map = Map.load_map(map_name)
+        self.display_map()
+
+    def new_game(self):
+        self.map = []
+        for _ in range(Map.SIZE):
+            self.map.append(list("_" * Map.SIZE))
+        self.map[int(Map.SIZE/2)][int(Map.SIZE/2)] = "h"
+        self.map[int(Map.SIZE/2)+1][int(Map.SIZE/2)] = "s"
+        self.map[int(Map.SIZE/2)+2][int(Map.SIZE/2)] = "t"
+        self.context = Context.IN_GAME
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.display_map()
 
     def to_main_menu(self):
         self.context = Context.MAIN_MENU
