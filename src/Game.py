@@ -151,6 +151,60 @@ class Game:
                 text_size=35
             )
         )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Rebind controls",
+                text_color=Colors.dark,
+                text_position=(100, 300),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Up",
+                text_color=Colors.dark,
+                text_position=(125, 350),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Down",
+                text_color=Colors.dark,
+                text_position=(125, 400),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Left",
+                text_color=Colors.dark,
+                text_position=(125, 450),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Right",
+                text_color=Colors.dark,
+                text_position=(125, 500),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Pause",
+                text_color=Colors.dark,
+                text_position=(125, 550),
+                text_size=35
+            )
+        )
         self.buttons.append(
             Button(
                 on_click=Button.to_main_menu,
@@ -202,6 +256,96 @@ class Game:
                     text_color=Colors.dark,
                     text_size=35,
                     text_position=(415, 200)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=print("test"),
+                rect=Rectangle(
+                    position=(270, 345),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(100, 40),
+                ),
+                text=Text(
+                    text="W",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 350)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=print("test"),
+                rect=Rectangle(
+                    position=(270, 395),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(100, 40),
+                ),
+                text=Text(
+                    text="S",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 400)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=print("test"),
+                rect=Rectangle(
+                    position=(270, 445),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(100, 40),
+                ),
+                text=Text(
+                    text="A",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 450)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=print("test"),
+                rect=Rectangle(
+                    position=(270, 495),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(100, 40),
+                ),
+                text=Text(
+                    text="D",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 500)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=print("test"),
+                rect=Rectangle(
+                    position=(270, 545),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(100, 40),
+                ),
+                text=Text(
+                    text="Esc",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 550)
                 ),
             )
         )
