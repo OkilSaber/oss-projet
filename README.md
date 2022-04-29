@@ -7,7 +7,7 @@ To run the game in dev mode simply run this command:
 ```
 ./script/start.sh
 ```
-To build an executable run this commande:
+To build an executable run this command:
 ```
 ./script/build.sh
 ```
