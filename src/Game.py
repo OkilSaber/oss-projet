@@ -5,8 +5,9 @@ from constants.Colors import Colors
 from constants.Context import Context
 from elements.Button import Button
 from elements.Rectangle import Rectangle
+from elements.MapImage import MapImage
 from elements.Text import Text
-import Map
+import Saves
 from json import load, dump
 from typing import List, Tuple
 
@@ -15,6 +16,7 @@ class Game:
     buttons: List[Button]
     texts: List[Text]
     rectangles: List[Rectangle]
+    map_images: List[MapImage]
     screen: pygame.Surface
     context: Context
     running: bool
@@ -25,8 +27,8 @@ class Game:
     buttons = []
     texts = []
     rectangles = []
-    map = []
-    fruits = []
+    map_images = []
+    snake = []
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
@@ -154,6 +156,9 @@ class Game:
                 text_size=35
             )
         )
+        self.rect.draw(screen=screen, color=color)
+        self.text.draw(screen=screen)
+
         self.buttons.append(
             Button(
                 on_click=Button.to_main_menu,
@@ -209,7 +214,7 @@ class Game:
             )
         )
     
-    def create_loadable_maps_menu(self, map_list):
+    def create_loadable_saves_menu(self, save_list):
         self.buttons.append(
             Button(
                 on_click=Button.to_main_menu,
@@ -230,11 +235,11 @@ class Game:
         )
 
         y = 200
-        for map in map_list:
-            map_name_display = "Map: %s || Date: %s" % (map[0].upper(), map[1].strftime("%m/%d/%Y, %H:%M:%S"))
+        for save in save_list:
+            save_name_display = "Map: %s || Date: %s" % (save[0].upper(), save[1].strftime("%m/%d/%Y, %H:%M:%S"))
             self.buttons.append(
                 Button(
-                    on_click=Button.play_this_map,
+                    on_click=Button.play_this_save,
                     rect=Rectangle(
                         position=(100, y),
                         color=(Colors.beige),
@@ -242,19 +247,19 @@ class Game:
                         size=(880, 100),
                     ),
                     text=Text(
-                        text=map_name_display,
+                        text=save_name_display,
                         font="Corbel",
                         text_color=Colors.dark,
                         text_size=35,
                         text_position=(120, y + 30)
                     ),
-                    metadata=map[0]
+                    metadata=save[0]
                 )
             )
 
             self.buttons.append(
                 Button(
-                    on_click=Button.delete_map,
+                    on_click=Button.delete_save,
                     rect=Rectangle(
                         position=(990, y + 5),
                         color=(Colors.red),
@@ -268,14 +273,14 @@ class Game:
                         text_size=35,
                         text_position=(1000, y + 30)
                     ),
-                    metadata=map[0]
+                    metadata=save[0]
                 )
             )
 
             y+= 120
         
     def display_map(self):
-        if self.map == None:
+        if self.snake == None:
             return
         start_x = (1280-(17*40))/2
         start_y = ((720-(17*40))/2)
@@ -288,23 +293,62 @@ class Game:
             )
         )
 
-        y = start_y
-        for row in self.map:
-            x = start_x
-            for block in row:
-                if block in ["h", "s"]:
-                    self.rectangles.append(
-                        Rectangle(
-                            position=(x, y),
-                            size=(16, 16),
-                            color=(Colors.red) if block == "h" else (Colors.dark),
-                            hover_color=(Colors.red) if block == "h" else (Colors.dark),
-                        )
-                    )
-                elif block == "f":
-                    self.fruits.append((x, y))
-                x += 17
-            y += 17
+        x = start_x + 17 * (self.snake[0]["x"])
+        y = start_y + 17 * (self.snake[0]["y"])
+        if self.snake[0]["y"] > self.snake[1]["y"]:
+            self.map_images.append(MapImage(x, y, Assets.head_down))
+        elif self.snake[0]["y"] < self.snake[1]["y"]:
+            self.map_images.append(MapImage(x, y, Assets.head_up))
+        elif self.snake[0]["x"] > self.snake[1]["x"]:
+            self.map_images.append(MapImage(x, y, Assets.head_right))
+        else:
+            self.map_images.append(MapImage(x, y, Assets.head_left))
+
+        for i, curr in enumerate(self.snake[1:]):
+            i += 1
+            x = start_x + 17 * (curr["x"])
+            y = start_y + 17 * (curr["y"])
+            prev = self.snake[i - 1]
+            next = None
+            if i + 1 < len(self.snake):
+                next = self.snake[i + 1]
+
+            if prev["y"] > curr["y"]: # from down
+                if next == None:
+                    self.map_images.append(MapImage(x, y, Assets.tail_up))
+                elif curr["y"] > next["y"]:
+                    self.map_images.append(MapImage(x, y, Assets.body_vertical))
+                elif curr["x"] > next["x"]:
+                    self.map_images.append(MapImage(x, y, Assets.body_bottomleft))
+                else:
+                    self.map_images.append(MapImage(x, y, Assets.body_bottomright))
+            elif prev["y"] < curr["y"]: # from up
+                if next == None:
+                    self.map_images.append(MapImage(x, y, Assets.tail_down))
+                elif curr["y"] < next["y"]:
+                    self.map_images.append(MapImage(x, y, Assets.body_vertical))
+                elif curr["x"] > next["x"]:
+                    self.map_images.append(MapImage(x, y, Assets.body_topleft))
+                else:
+                    self.map_images.append(MapImage(x, y, Assets.body_topright))
+            elif prev["x"] > curr["x"]: # from right
+                if next == None:
+                    self.map_images.append(MapImage(x, y, Assets.tail_left))
+                elif curr["y"] < next["y"]:
+                    self.map_images.append(MapImage(x, y, Assets.body_bottomright))
+                elif curr["y"] > next["y"]:
+                    self.map_images.append(MapImage(x, y, Assets.body_topright))
+                else:
+                    self.map_images.append(MapImage(x, y, Assets.body_horizontal))
+            else: # from left
+                if next == None:
+                    self.map_images.append(MapImage(x, y, Assets.tail_right))
+                elif curr["y"] < next["y"]:
+                    self.map_images.append(MapImage(x, y, Assets.body_bottomleft))
+                elif curr["y"] > next["y"]:
+                    self.map_images.append(MapImage(x, y, Assets.body_topleft))
+                else:
+                    self.map_images.append(MapImage(x, y, Assets.body_horizontal))
 
 
     def check_buttons_click(self, position: Tuple[int, int]):
@@ -316,8 +360,8 @@ class Game:
             rect.draw(screen=self.screen, color=rect.color)
         for text in self.texts:
             text.draw(screen=self.screen)
-        for fruit in self.fruits:
-            self.screen.blit(pygame.transform.scale(pygame.image.load(Assets.apple_image),(17,17)), (fruit[0], fruit[1]))
+        for img in self.map_images:
+            img.draw(screen=self.screen)
         for button in self.buttons:
             button.on_hover(mouse=position, screen=self.screen)
 
@@ -338,43 +382,41 @@ class Game:
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
-        self.fruits = []
+        self.map_images.clear()
         self.create_options_menu_elements()
     
     def to_load(self):
-        self.context = Context.LOAD_MAP
+        self.context = Context.LOAD_SAVE
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
-        self.fruits = []
-        map_list = Map.list_maps()
-        self.create_loadable_maps_menu(map_list)
+        self.map_images.clear()
+        saves = Saves.list_saves()
+        self.create_loadable_saves_menu(saves)
     
-    def delete_map(self, map_name):
-        Map.delete_map(map_name)
+    def delete_save(self, save_name):
+        Saves.delete_save(save_name)
         self.to_load()
     
-    def play_game_from_load(self, map_name):
+    def play_game_from_load(self, save_name):
         self.context = Context.IN_GAME
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
-        self.fruits = []
-        self.map = Map.load_map(map_name)
+        self.map_images.clear()
+        self.snake = Saves.load_save(save_name)
         self.display_map()
 
     def new_game(self):
-        self.map = []
-        for _ in range(Map.SIZE):
-            self.map.append(list("_" * Map.SIZE))
-        self.map[int(Map.SIZE/2)][int(Map.SIZE/2)] = "h"
-        self.map[int(Map.SIZE/2)+1][int(Map.SIZE/2)] = "s"
-        self.map[int(Map.SIZE/2)+2][int(Map.SIZE/2)] = "s"
+        self.snake = []
+        self.snake.append({"x": 40/2, "y": 40/2})
+        self.snake.append({"x": 40/2, "y": 40/2+1})
+        self.snake.append({"x": 40/2, "y": 40/2+2})
         self.context = Context.IN_GAME
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
-        self.fruits = []
+        self.map_images.clear()
         self.display_map()
 
     def to_main_menu(self):
@@ -382,7 +424,7 @@ class Game:
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
-        self.fruits = []
+        self.map_images.clear()
         self.create_main_menu_buttons()
 
     def load_settings(self):

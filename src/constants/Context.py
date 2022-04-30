@@ -6,4 +6,4 @@ class Context(enum.Enum):
     IN_GAME = 2
     PAUSE = 3
     OPTIONS = 4
-    LOAD_MAP = 5
+    LOAD_SAVE = 5
