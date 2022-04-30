@@ -29,7 +29,7 @@ class Game:
     map = []
     fruits = []
     direction = 'up'
-    speed = 100
+    speed = 75
     snake = []
     head = tuple
     tail = tuple
