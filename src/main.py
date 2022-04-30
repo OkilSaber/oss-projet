@@ -21,6 +21,7 @@ while game.running:
     if game.playing == True and pygame.time.get_ticks() - ticks > game.speed:
         game.move_snake()
         ticks = pygame.time.get_ticks()
+        game.map_images.clear()
         game.display_map()
     if game.gameover:
         game.playing = False

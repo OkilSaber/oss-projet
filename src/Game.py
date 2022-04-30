@@ -30,6 +30,7 @@ class Game:
     rectangles = []
     map_images = []
     snake = []
+    fruit = (0, 0)
     direction = 'up'
     speed = 75
     playing = bool
@@ -360,7 +361,7 @@ class Game:
             )
         )
 
-    def create_loadable_maps_menu(self, map_list):
+    def create_loadable_saves_menu(self, save_list):
         self.buttons.append(
             Button(
                 on_click=Button.to_main_menu,
@@ -430,6 +431,7 @@ class Game:
             return
         start_x = (1280-(17*40))/2
         start_y = ((720-(17*40))/2)
+        self.map_images.append(MapImage(start_x + 17 * self.fruit[0], start_y + 17 * self.fruit[1], Assets.apple_image))
         self.rectangles.append(
             Rectangle(
                 position=(start_x, start_y),
@@ -554,13 +556,12 @@ class Game:
         self.display_map()
 
     def spawn_fruit(self):
-        x = round(random.randrange(0, Map.SIZE))
-        y = round(random.randrange(0, Map.SIZE))
-        if self.map[x][y] != '_':
-            return self.spawn_fruit()
-        self.map[x][y] = 'f'
-        self.fruits = []
-        self.fruits.append((x, y))
+        x = round(random.randrange(0, 40))
+        y = round(random.randrange(0, 40))
+        for elem in self.snake:
+            if elem["x"] == x and elem["y"] == y:
+                return self.spawn_fruit()
+        self.fruit = (x, y)
 
     def new_game(self):
         self.snake = []
@@ -572,13 +573,8 @@ class Game:
         self.rectangles.clear()
         self.texts.clear()
         self.map_images.clear()
-        self.display_map()
         self.spawn_fruit()
-        self.head = tuple((int(Map.SIZE/2), int(Map.SIZE/2)))
-        self.tail = tuple((int(Map.SIZE/2 + 2), int(Map.SIZE/2)))
-        self.snake.append(self.head)
-        self.snake.append(tuple((int(Map.SIZE/2 + 1), int(Map.SIZE/2))))
-        self.snake.append(self.tail)
+        self.display_map()
         self.playing = True
 
     def to_main_menu(self):
@@ -599,7 +595,8 @@ class Game:
                 "up": "up",
                 "down": "down",
                 "left": "left",
-                "right": "right"
+                "right": "right",
+                "pause": "space"
             }
             settings_file = open('settings.json', 'w')
             dump(settings, settings_file)
@@ -611,70 +608,61 @@ class Game:
         self.settings[key] = value
         dump(self.settings, open('settings.json', 'w'))
 
-    def move_head(self, newhead):
-        self.map[newhead[0]][newhead[1]] = 'h'
-        self.map[self.head[0]][self.head[1]] = 's'
-        self.head = newhead
-        self.snake.insert(0, newhead)
-        tail = self.snake.pop()
-        self.map[tail[0]][tail[1]] = '_'
-
-    def grow(self):
-        last = self.snake[-1]
-        blast = self.snake[-2]
-
-        if blast[0] == last[0] and blast[1] == last[1] + 1 and last[1] - 1 > 0:
-            tail = tuple((last[0], last[1] - 1))
-        if blast[0] == last[0] and blast[1] == last[1] - 1 and last[1] + 1 < Map.SIZE:
-            tail = tuple((last[0], last[1] + 1))
-        if blast[1] == last[1] and blast[0] == last[0] + 1 and last[0] - 1 > 0:
-            tail = tuple((last[0] - 1, last[1]))
-        if blast[1] == last[1] and blast[0] == last[0] - 1 and last[0] + 1 < Map.SIZE:
-            tail = tuple((last[0] + 1, last[1]))
-        self.snake.append(tail)
-        self.map[tail[0]][tail[1]] = '_'
-
+    def move_head(self, newhead, cut_tail):
+        self.snake.insert(0, {"x": newhead[0], "y": newhead[1]})
+        if cut_tail:
+            self.snake.pop()
+    
+    def is_snake(self, x, y):
+        for elem in self.snake:
+            if elem["x"] == x and elem["y"] == y:
+                return True
+        return False
 
     def move_up(self):
-        newhead = tuple((self.head[0] - 1, self.head[1]))
-        if newhead[0] < 0 or self.map[newhead[0]][newhead[1]] == 's':
+        newhead = (self.snake[0]["x"], self.snake[0]["y"] - 1)
+        if newhead[1] < 0 or self.is_snake(newhead[0], newhead[1]):
             self.gameover = True
             return
-        if self.map[newhead[0]][newhead[1]] == 'f':
+        if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
+            self.move_head(newhead, False)
             self.spawn_fruit()
-            self.grow()
-        self.move_head(newhead)
+        else:
+            self.move_head(newhead, True)
+            
 
     def move_down(self):
-        newhead = tuple((self.head[0] + 1, self.head[1]))
-        if newhead[0] >= Map.SIZE or self.map[newhead[0]][newhead[1]] == 's':
+        newhead = (self.snake[0]["x"], self.snake[0]["y"] + 1)
+        if newhead[1] >= 40 or self.is_snake(newhead[0], newhead[1]):
             self.gameover = True
             return
-        if self.map[newhead[0]][newhead[1]] == 'f':
+        if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
+            self.move_head(newhead, False)
             self.spawn_fruit()
-            self.grow()
-        self.move_head(newhead)
+        else:
+            self.move_head(newhead, True)
 
     def move_left(self):
-        newhead = tuple((self.head[0], self.head[1] - 1))
-        if newhead[1] < 0 or self.map[newhead[0]][newhead[1]] == 's':
+        newhead = (self.snake[0]["x"] - 1, self.snake[0]["y"])
+        if newhead[0] < 0 or self.is_snake(newhead[0], newhead[1]):
             self.gameover = True
             return
-        if self.map[newhead[0]][newhead[1]] == 'f':
+        if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
+            self.move_head(newhead, False)
             self.spawn_fruit()
-            self.grow()
-        self.move_head(newhead)
+        else:
+            self.move_head(newhead, True)
 
     def move_right(self):
-        newhead = tuple((self.head[0], self.head[1] + 1))
-        if newhead[1] >= Map.SIZE or self.map[newhead[0]][newhead[1]] == 's':
+        newhead = (self.snake[0]["x"] + 1, self.snake[0]["y"])
+        if newhead[0] >= 40 or self.is_snake(newhead[0], newhead[1]):
             self.gameover = True
             return
-        if self.map[newhead[0]][newhead[1]] == 'f':
+        if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
+            self.move_head(newhead, False)
             self.spawn_fruit()
-            self.grow()
-            self.map[newhead[0]][newhead[1]] = '_'
-        self.move_head(newhead)
+        else:
+            self.move_head(newhead, True)
 
     def move_snake(self):
         if self.direction == 'up' and self.playing:
@@ -695,6 +683,7 @@ class Game:
             self.direction = 'up'
         elif key == pygame.K_DOWN and self.direction != 'up':
             self.direction = 'down'
+
     def change_binding_up(self, key):
         self.update_settings("up", key)
         self.buttons.clear()
