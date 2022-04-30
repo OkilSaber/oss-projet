@@ -27,6 +27,13 @@ class Game:
     rectangles = []
     map = []
     fruits = []
+    direction = 'up'
+    speed = 10
+    snake = []
+    head = tuple
+    tail = tuple
+    playing = bool
+    gameover = False
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
@@ -208,7 +215,7 @@ class Game:
                 ),
             )
         )
-    
+
     def create_loadable_maps_menu(self, map_list):
         self.buttons.append(
             Button(
@@ -273,7 +280,7 @@ class Game:
             )
 
             y+= 120
-        
+
     def display_map(self):
         if self.map == None:
             return
@@ -340,7 +347,7 @@ class Game:
         self.texts.clear()
         self.fruits = []
         self.create_options_menu_elements()
-    
+
     def to_load(self):
         self.context = Context.LOAD_MAP
         self.buttons.clear()
@@ -349,11 +356,11 @@ class Game:
         self.fruits = []
         map_list = Map.list_maps()
         self.create_loadable_maps_menu(map_list)
-    
+
     def delete_map(self, map_name):
         Map.delete_map(map_name)
         self.to_load()
-    
+
     def play_game_from_load(self, map_name):
         self.context = Context.IN_GAME
         self.buttons.clear()
@@ -376,6 +383,12 @@ class Game:
         self.texts.clear()
         self.fruits = []
         self.display_map()
+        self.head = tuple((int(Map.SIZE/2), int(Map.SIZE/2)))
+        self.tail = tuple((int(Map.SIZE/2 + 2), int(Map.SIZE/2)))
+        self.snake.append(self.head)
+        self.snake.append(tuple((int(Map.SIZE/2 + 1), int(Map.SIZE/2))))
+        self.snake.append(self.tail)
+        self.playing = True
 
     def to_main_menu(self):
         self.context = Context.MAIN_MENU
@@ -390,7 +403,7 @@ class Game:
             self.settings = load(open("settings.json"))
         except Exception as e:
             settings = {
-                "music": 100,
+                "music": 0,
                 "effects": 100,
                 "up": "up",
                 "down": "down",
@@ -406,3 +419,38 @@ class Game:
     def update_settings(self, key, value):
         self.settings[key] = value
         dump(self.settings, open('settings.json', 'w'))
+
+
+    def move_up(self):
+        newhead = tuple((self.head[0] - 1, self.head[1]))
+        if newhead[0] < 0 or self.map[newhead[0]][newhead[1]] == 's':
+            self.gameover = True
+            return
+        self.map[newhead[0]][newhead[1]] = 'h'
+        self.map[self.head[0]][self.head[1]] = 's'
+        self.head = newhead
+        self.snake.insert(0, newhead)
+        tail = self.snake.pop()
+        self.map[tail[0]][tail[1]] = '_'
+
+
+
+    def move_snake(self):
+        if self.direction == 'up' and self.playing:
+            self.move_up()
+#        if self.direction == 'down':
+#            move_down()
+#        if self.direction == 'left':
+#            move_left()
+#        if self.direction == 'right':
+#            move_right()
+
+    def change_direction(self, key):
+        if key == pygame.K_LEFT:
+            self.direction = 'left'
+        elif key == pygame.K_RIGHT:
+            self.direction = 'right'
+        elif key == pygame.K_UP:
+            self.direction = 'up'
+        elif key == pygame.K_DOWN:
+            self.direction = 'down'
