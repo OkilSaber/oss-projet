@@ -1,9 +1,11 @@
 import pygame
 import re
+import Saves
 from elements.Rectangle import Rectangle
 from elements.Text import Text
 from typing import Tuple
 from constants.Context import Context
+
 
 
 class Button:
@@ -123,7 +125,16 @@ class Button:
         game.context = Context.IN_GAME
     
     def pause_save_game(self, game):
-        return
-    
+        Saves.save(game.save_count, game.snake, game.fruit)
+        game.save_count += 1
+
+    def pause_restart_game(self, game):
+        game.buttons.clear()
+        game.rectangles.clear()
+        game.texts.clear()
+        game.map_images.clear()
+        game.direction = "up"
+        game.new_game()
+
     def pause_quit_game(self, game):
-        game.running = False
+        game.to_main_menu()

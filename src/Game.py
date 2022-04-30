@@ -35,6 +35,7 @@ class Game:
     speed = 75
     playing = bool
     gameover = False
+    save_count = 0
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
@@ -409,7 +410,7 @@ class Game:
         )
         self.buttons.append(
             Button(
-                on_click=Button.pause_quit_game,
+                on_click=Button.pause_restart_game,
                 rect=Rectangle(
                     position=(440, 400),
                     color=(Colors.beige),
@@ -417,14 +418,32 @@ class Game:
                     size=(400, 100),
                 ),
                 text=Text(
-                    text="Quit",
+                    text="Restart",
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(610, 430)
+                    text_position=(600, 430)
                 ),
             )
         )
+        self.buttons.append(
+                    Button(
+                        on_click=Button.pause_quit_game,
+                        rect=Rectangle(
+                            position=(440, 550),
+                            color=(Colors.beige),
+                            hover_color=(Colors.white),
+                            size=(400, 100),
+                        ),
+                        text=Text(
+                            text="Quit",
+                            font="Corbel",
+                            text_color=Colors.dark,
+                            text_size=35,
+                            text_position=(610, 580)
+                        ),
+                    )
+                )
 
     def to_pause_menu(self):
         self.context = Context.PAUSE
