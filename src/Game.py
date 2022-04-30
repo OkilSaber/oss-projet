@@ -1,3 +1,4 @@
+from hashlib import new
 import pygame
 import re
 from constants.Assets import Assets
@@ -10,7 +11,7 @@ from elements.Text import Text
 import Saves
 from json import load, dump
 from typing import List, Tuple
-
+import random
 
 class Game:
     buttons: List[Button]
@@ -29,6 +30,10 @@ class Game:
     rectangles = []
     map_images = []
     snake = []
+    direction = 'up'
+    speed = 75
+    playing = bool
+    gameover = False
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
@@ -156,9 +161,60 @@ class Game:
                 text_size=35
             )
         )
-        self.rect.draw(screen=screen, color=color)
-        self.text.draw(screen=screen)
-
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Rebind controls",
+                text_color=Colors.dark,
+                text_position=(100, 300),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Up",
+                text_color=Colors.dark,
+                text_position=(125, 350),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Down",
+                text_color=Colors.dark,
+                text_position=(125, 400),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Left",
+                text_color=Colors.dark,
+                text_position=(125, 450),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Right",
+                text_color=Colors.dark,
+                text_position=(125, 500),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Pause",
+                text_color=Colors.dark,
+                text_position=(125, 550),
+                text_size=35
+            )
+        )
         self.buttons.append(
             Button(
                 on_click=Button.to_main_menu,
@@ -213,8 +269,98 @@ class Game:
                 ),
             )
         )
-    
-    def create_loadable_saves_menu(self, save_list):
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_up,
+                rect=Rectangle(
+                    position=(270, 345),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["up"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 350)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_down,
+                rect=Rectangle(
+                    position=(270, 395),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["down"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 400)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_left,
+                rect=Rectangle(
+                    position=(270, 445),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["left"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 450)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_right,
+                rect=Rectangle(
+                    position=(270, 495),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["right"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 500)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_pause,
+                rect=Rectangle(
+                    position=(270, 545),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["pause"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 550)
+                ),
+            )
+        )
+
+    def create_loadable_maps_menu(self, map_list):
         self.buttons.append(
             Button(
                 on_click=Button.to_main_menu,
@@ -278,7 +424,7 @@ class Game:
             )
 
             y+= 120
-        
+
     def display_map(self):
         if self.snake == None:
             return
@@ -384,7 +530,7 @@ class Game:
         self.texts.clear()
         self.map_images.clear()
         self.create_options_menu_elements()
-    
+
     def to_load(self):
         self.context = Context.LOAD_SAVE
         self.buttons.clear()
@@ -407,6 +553,15 @@ class Game:
         self.snake = Saves.load_save(save_name)
         self.display_map()
 
+    def spawn_fruit(self):
+        x = round(random.randrange(0, Map.SIZE))
+        y = round(random.randrange(0, Map.SIZE))
+        if self.map[x][y] != '_':
+            return self.spawn_fruit()
+        self.map[x][y] = 'f'
+        self.fruits = []
+        self.fruits.append((x, y))
+
     def new_game(self):
         self.snake = []
         self.snake.append({"x": 40/2, "y": 40/2})
@@ -418,6 +573,13 @@ class Game:
         self.texts.clear()
         self.map_images.clear()
         self.display_map()
+        self.spawn_fruit()
+        self.head = tuple((int(Map.SIZE/2), int(Map.SIZE/2)))
+        self.tail = tuple((int(Map.SIZE/2 + 2), int(Map.SIZE/2)))
+        self.snake.append(self.head)
+        self.snake.append(tuple((int(Map.SIZE/2 + 1), int(Map.SIZE/2))))
+        self.snake.append(self.tail)
+        self.playing = True
 
     def to_main_menu(self):
         self.context = Context.MAIN_MENU
@@ -432,7 +594,7 @@ class Game:
             self.settings = load(open("settings.json"))
         except Exception as e:
             settings = {
-                "music": 100,
+                "music": 0,
                 "effects": 100,
                 "up": "up",
                 "down": "down",
@@ -448,3 +610,146 @@ class Game:
     def update_settings(self, key, value):
         self.settings[key] = value
         dump(self.settings, open('settings.json', 'w'))
+
+    def move_head(self, newhead):
+        self.map[newhead[0]][newhead[1]] = 'h'
+        self.map[self.head[0]][self.head[1]] = 's'
+        self.head = newhead
+        self.snake.insert(0, newhead)
+        tail = self.snake.pop()
+        self.map[tail[0]][tail[1]] = '_'
+
+    def grow(self):
+        last = self.snake[-1]
+        blast = self.snake[-2]
+
+        if blast[0] == last[0] and blast[1] == last[1] + 1 and last[1] - 1 > 0:
+            tail = tuple((last[0], last[1] - 1))
+        if blast[0] == last[0] and blast[1] == last[1] - 1 and last[1] + 1 < Map.SIZE:
+            tail = tuple((last[0], last[1] + 1))
+        if blast[1] == last[1] and blast[0] == last[0] + 1 and last[0] - 1 > 0:
+            tail = tuple((last[0] - 1, last[1]))
+        if blast[1] == last[1] and blast[0] == last[0] - 1 and last[0] + 1 < Map.SIZE:
+            tail = tuple((last[0] + 1, last[1]))
+        self.snake.append(tail)
+        self.map[tail[0]][tail[1]] = '_'
+
+
+    def move_up(self):
+        newhead = tuple((self.head[0] - 1, self.head[1]))
+        if newhead[0] < 0 or self.map[newhead[0]][newhead[1]] == 's':
+            self.gameover = True
+            return
+        if self.map[newhead[0]][newhead[1]] == 'f':
+            self.spawn_fruit()
+            self.grow()
+        self.move_head(newhead)
+
+    def move_down(self):
+        newhead = tuple((self.head[0] + 1, self.head[1]))
+        if newhead[0] >= Map.SIZE or self.map[newhead[0]][newhead[1]] == 's':
+            self.gameover = True
+            return
+        if self.map[newhead[0]][newhead[1]] == 'f':
+            self.spawn_fruit()
+            self.grow()
+        self.move_head(newhead)
+
+    def move_left(self):
+        newhead = tuple((self.head[0], self.head[1] - 1))
+        if newhead[1] < 0 or self.map[newhead[0]][newhead[1]] == 's':
+            self.gameover = True
+            return
+        if self.map[newhead[0]][newhead[1]] == 'f':
+            self.spawn_fruit()
+            self.grow()
+        self.move_head(newhead)
+
+    def move_right(self):
+        newhead = tuple((self.head[0], self.head[1] + 1))
+        if newhead[1] >= Map.SIZE or self.map[newhead[0]][newhead[1]] == 's':
+            self.gameover = True
+            return
+        if self.map[newhead[0]][newhead[1]] == 'f':
+            self.spawn_fruit()
+            self.grow()
+            self.map[newhead[0]][newhead[1]] = '_'
+        self.move_head(newhead)
+
+    def move_snake(self):
+        if self.direction == 'up' and self.playing:
+            self.move_up()
+        if self.direction == 'down':
+            self.move_down()
+        if self.direction == 'left':
+            self.move_left()
+        if self.direction == 'right':
+            self.move_right()
+
+    def change_direction(self, key):
+        if key == pygame.K_LEFT and self.direction != 'right':
+            self.direction = 'left'
+        elif key == pygame.K_RIGHT and self.direction != 'left':
+            self.direction = 'right'
+        elif key == pygame.K_UP and self.direction != 'down':
+            self.direction = 'up'
+        elif key == pygame.K_DOWN and self.direction != 'up':
+            self.direction = 'down'
+    def change_binding_up(self, key):
+        self.update_settings("up", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_down(self, key):
+        self.update_settings("down", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_left(self, key):
+        self.update_settings("left", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_right(self, key):
+        self.update_settings("right", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_pause(self, key):
+        self.update_settings("pause", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def check_key_binding_input(self, event):
+        if event.type == pygame.KEYDOWN:
+            match self.context:
+                case Context.OPTIONS_WAITING_INPUT_UP:
+                    self.change_binding_up(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_DOWN:
+                    self.change_binding_down(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_LEFT:
+                    self.change_binding_left(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_RIGHT:
+                    self.change_binding_right(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_PAUSE:
+                    self.change_binding_pause(pygame.key.name(event.key))
