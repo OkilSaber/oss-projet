@@ -439,6 +439,21 @@ class Game:
         tail = self.snake.pop()
         self.map[tail[0]][tail[1]] = '_'
 
+    def grow(self):
+        last = self.snake[-1]
+        blast = self.snake[-2]
+
+        if blast[0] == last[0] and blast[1] == last[1] + 1 and last[1] - 1 > 0:
+            tail = tuple((last[0], last[1] - 1))
+        if blast[0] == last[0] and blast[1] == last[1] - 1 and last[1] + 1 < Map.SIZE:
+            tail = tuple((last[0], last[1] + 1))
+        if blast[1] == last[1] and blast[0] == last[0] + 1 and last[0] - 1 > 0:
+            tail = tuple((last[0] - 1, last[1]))
+        if blast[1] == last[1] and blast[0] == last[0] - 1 and last[0] + 1 < Map.SIZE:
+            tail = tuple((last[0] + 1, last[1]))
+        self.snake.append(tail)
+        self.map[tail[0]][tail[1]] = '_'
+
 
     def move_up(self):
         newhead = tuple((self.head[0] - 1, self.head[1]))
@@ -447,7 +462,7 @@ class Game:
             return
         if self.map[newhead[0]][newhead[1]] == 'f':
             self.spawn_fruit()
-#            self.grow()
+            self.grow()
         self.move_head(newhead)
 
     def move_down(self):
@@ -457,7 +472,7 @@ class Game:
             return
         if self.map[newhead[0]][newhead[1]] == 'f':
             self.spawn_fruit()
-#            self.grow()
+            self.grow()
         self.move_head(newhead)
 
     def move_left(self):
@@ -467,7 +482,7 @@ class Game:
             return
         if self.map[newhead[0]][newhead[1]] == 'f':
             self.spawn_fruit()
-#            self.grow()
+            self.grow()
         self.move_head(newhead)
 
     def move_right(self):
@@ -477,7 +492,7 @@ class Game:
             return
         if self.map[newhead[0]][newhead[1]] == 'f':
             self.spawn_fruit()
-#            self.grow()
+            self.grow()
             self.map[newhead[0]][newhead[1]] = '_'
         self.move_head(newhead)
 
