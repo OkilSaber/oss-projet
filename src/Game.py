@@ -675,13 +675,13 @@ class Game:
             self.move_right()
 
     def change_direction(self, key):
-        if key == pygame.K_LEFT and self.direction != 'right':
+        if key == pygame.key.key_code(self.settings['left']) and self.direction != 'right':
             self.direction = 'left'
-        elif key == pygame.K_RIGHT and self.direction != 'left':
+        elif key == pygame.key.key_code(self.settings['right']) and self.direction != 'left':
             self.direction = 'right'
-        elif key == pygame.K_UP and self.direction != 'down':
+        elif key == pygame.key.key_code(self.settings['up']) and self.direction != 'down':
             self.direction = 'up'
-        elif key == pygame.K_DOWN and self.direction != 'up':
+        elif key == pygame.key.key_code(self.settings['down']) and self.direction != 'up':
             self.direction = 'down'
 
     def change_binding_up(self, key):
