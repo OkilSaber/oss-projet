@@ -373,11 +373,11 @@ class Game:
         )
         self.buttons.append(
             Button(
-                on_click=Button.new_game,
+                on_click=Button.pause_resume_game,
                 rect=Rectangle(
                     position=(440, 100),
                     color=(Colors.beige),
-                    hover_color=(Colors.light_green),
+                    hover_color=(Colors.white),
                     size=(400, 100),
                 ),
                 text=Text(
@@ -391,11 +391,11 @@ class Game:
         )
         self.buttons.append(
             Button(
-                on_click=Button.to_load,
+                on_click=Button.pause_save_game,
                 rect=Rectangle(
                     position=(440, 250),
                     color=(Colors.beige),
-                    hover_color=(Colors.light_green),
+                    hover_color=(Colors.white),
                     size=(400, 100),
                 ),
                 text=Text(
@@ -409,11 +409,11 @@ class Game:
         )
         self.buttons.append(
             Button(
-                on_click=Button.to_options,
+                on_click=Button.pause_quit_game,
                 rect=Rectangle(
                     position=(440, 400),
                     color=(Colors.beige),
-                    hover_color=(Colors.light_green),
+                    hover_color=(Colors.white),
                     size=(400, 100),
                 ),
                 text=Text(
@@ -427,14 +427,13 @@ class Game:
         )
 
     def to_pause_menu(self):
-        print("PAUSE")
         self.context = Context.PAUSE
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
         self.map_images.clear()
         self.create_pause_menu_elements()
-        # self.playing = False
+        self.playing = False
 
     def create_loadable_saves_menu(self, save_list):
         self.buttons.append(

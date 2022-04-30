@@ -113,3 +113,17 @@ class Button:
 
     def click(self, game):
         game.play_sound("assets/button_click.mp3")
+
+    def pause_resume_game(self, game):
+        game.buttons.clear()
+        game.rectangles.clear()
+        game.texts.clear()
+        game.map_images.clear()
+        game.playing = True
+        game.context = Context.IN_GAME
+    
+    def pause_save_game(self, game):
+        return
+    
+    def pause_quit_game(self, game):
+        game.running = False
