@@ -5,7 +5,7 @@ import pygame
 
 pygame.init()
 game = Game()
-clock = pygame.time.Clock()
+ticks = pygame.time.get_ticks()
 while game.running:
     game.screen.blit(game.background_image_surface, (0, 0))
     for event in pygame.event.get():
@@ -16,11 +16,11 @@ while game.running:
             game.check_buttons_click(mouse)
         if event.type == pygame.KEYDOWN:
             game.change_direction(event.type)
-    if game.playing == True:
+    if game.playing == True and pygame.time.get_ticks() - ticks > game.speed:
         game.move_snake()
+        ticks = pygame.time.get_ticks()
         game.display_map()
     if game.gameover:
         game.playing = False
-    clock.tick(2000)
     game.draw_elements(position=pygame.mouse.get_pos())
     pygame.display.update()
