@@ -60,7 +60,7 @@ class Button:
     
     def delete_save(self, game):
         game.play_sound("assets/button_click.mp3")
-        game.delete_map(self.metadata)
+        game.delete_save(self.metadata)
     
     def play_this_save(self, game):
         game.play_sound("assets/button_click.mp3")
