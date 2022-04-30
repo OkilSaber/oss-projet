@@ -9,3 +9,4 @@ class Colors():
     amaranth = (232, 49, 81)
     red = (209, 26, 42)
     light_red = (255, 75, 91 )
+    black = (0, 0, 0)

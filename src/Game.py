@@ -35,6 +35,7 @@ class Game:
     speed = 75
     playing = bool
     gameover = False
+    score = 0
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
@@ -541,11 +542,11 @@ class Game:
         self.map_images.clear()
         saves = Saves.list_saves()
         self.create_loadable_saves_menu(saves)
-    
+
     def delete_save(self, save_name):
         Saves.delete_save(save_name)
         self.to_load()
-    
+
     def play_game_from_load(self, save_name):
         self.context = Context.IN_GAME
         self.buttons.clear()
@@ -579,9 +580,11 @@ class Game:
         self.spawn_fruit()
         self.display_map()
         self.playing = True
+        self.gameover = False
 
     def to_main_menu(self):
         self.context = Context.MAIN_MENU
+        self.gameover = False
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -611,16 +614,54 @@ class Game:
         self.settings[key] = value
         dump(self.settings, open('settings.json', 'w'))
 
-    def move_head(self, newhead, cut_tail):
+    def move_head(self, newhead, cut_tail, grow):
+        if grow:
+            self.score += 10
         self.snake.insert(0, {"x": newhead[0], "y": newhead[1]})
         if cut_tail:
             self.snake.pop()
-    
+
     def is_snake(self, x, y):
         for elem in self.snake:
             if elem["x"] == x and elem["y"] == y:
                 return True
         return False
+
+
+    def loose(self):
+        x, y = self.screen.get_size()
+        self.context = Context.MAIN_MENU
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.map_images.clear()
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Gameover",
+                text_color=Colors.black,
+                text_position=(x/2 - 35, y/2 + 50),
+                text_size=50
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.to_main_menu,
+                rect=Rectangle(
+                    position=(x/2, y/2 + 100),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(100, 50),
+                ),
+                text=Text(
+                    text="Back",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(x/2 + 25, y/2 + 110)
+                ),
+            )
+        )
 
     def move_up(self):
         newhead = (self.snake[0]["x"], self.snake[0]["y"] - 1)
@@ -628,11 +669,10 @@ class Game:
             self.gameover = True
             return
         if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
-            self.move_head(newhead, False)
+            self.move_head(newhead, False, True)
             self.spawn_fruit()
         else:
-            self.move_head(newhead, True)
-            
+            self.move_head(newhead, True, False)
 
     def move_down(self):
         newhead = (self.snake[0]["x"], self.snake[0]["y"] + 1)
@@ -640,10 +680,10 @@ class Game:
             self.gameover = True
             return
         if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
-            self.move_head(newhead, False)
+            self.move_head(newhead, False, True)
             self.spawn_fruit()
         else:
-            self.move_head(newhead, True)
+            self.move_head(newhead, True, False)
 
     def move_left(self):
         newhead = (self.snake[0]["x"] - 1, self.snake[0]["y"])
@@ -651,10 +691,10 @@ class Game:
             self.gameover = True
             return
         if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
-            self.move_head(newhead, False)
+            self.move_head(newhead, False, True)
             self.spawn_fruit()
         else:
-            self.move_head(newhead, True)
+            self.move_head(newhead, True, False)
 
     def move_right(self):
         newhead = (self.snake[0]["x"] + 1, self.snake[0]["y"])
@@ -662,10 +702,10 @@ class Game:
             self.gameover = True
             return
         if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
-            self.move_head(newhead, False)
+            self.move_head(newhead, False, True)
             self.spawn_fruit()
         else:
-            self.move_head(newhead, True)
+            self.move_head(newhead, True, False)
 
     def move_snake(self):
         if self.direction == 'up' and self.playing:

@@ -18,12 +18,13 @@ while game.running:
         if event.type == pygame.KEYDOWN:
             game.change_direction(event.key)
         game.check_key_binding_input(event)
-    if game.playing == True and pygame.time.get_ticks() - ticks > game.speed:
-        game.move_snake()
+    if game.gameover == True:
+        game.loose()
+        game.playing = False
+    elif game.playing == True and game.gameover == False and pygame.time.get_ticks() - ticks > game.speed:
         ticks = pygame.time.get_ticks()
         game.map_images.clear()
+        game.move_snake()
         game.display_map()
-    if game.gameover:
-        game.playing = False
     game.draw_elements(position=pygame.mouse.get_pos())
     pygame.display.update()
