@@ -454,3 +454,17 @@ class Game:
         self.create_options_menu_elements()
         self.context = Context.OPTIONS
         return
+
+    def check_key_binding_input(self, event):
+        if event.type == pygame.KEYDOWN:
+            match self.context:
+                case Context.OPTIONS_WAITING_INPUT_UP:
+                    self.change_binding_up(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_DOWN:
+                    self.change_binding_down(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_LEFT:
+                    self.change_binding_left(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_RIGHT:
+                    self.change_binding_right(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_PAUSE:
+                    self.change_binding_pause(pygame.key.name(event.key))
