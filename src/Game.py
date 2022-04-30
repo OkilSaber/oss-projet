@@ -1,3 +1,4 @@
+from hashlib import new
 import pygame
 import re
 from constants.Assets import Assets
@@ -9,7 +10,7 @@ from elements.Text import Text
 import Map
 from json import load, dump
 from typing import List, Tuple
-
+import random
 
 class Game:
     buttons: List[Button]
@@ -370,6 +371,15 @@ class Game:
         self.map = Map.load_map(map_name)
         self.display_map()
 
+    def spawn_fruit(self):
+        x = round(random.randrange(0, Map.SIZE))
+        y = round(random.randrange(0, Map.SIZE))
+        if self.map[x][y] != '_':
+            return self.spawn_fruit()
+        self.map[x][y] = 'f'
+        self.fruits = []
+        self.fruits.append((x, y))
+
     def new_game(self):
         self.map = []
         for _ in range(Map.SIZE):
@@ -381,6 +391,7 @@ class Game:
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
+        self.spawn_fruit()
         self.fruits = []
         self.display_map()
         self.head = tuple((int(Map.SIZE/2), int(Map.SIZE/2)))
@@ -420,54 +431,55 @@ class Game:
         self.settings[key] = value
         dump(self.settings, open('settings.json', 'w'))
 
+    def move_head(self, newhead):
+        self.map[newhead[0]][newhead[1]] = 'h'
+        self.map[self.head[0]][self.head[1]] = 's'
+        self.head = newhead
+        self.snake.insert(0, newhead)
+        tail = self.snake.pop()
+        self.map[tail[0]][tail[1]] = '_'
+
 
     def move_up(self):
         newhead = tuple((self.head[0] - 1, self.head[1]))
         if newhead[0] < 0 or self.map[newhead[0]][newhead[1]] == 's':
             self.gameover = True
             return
-        self.map[newhead[0]][newhead[1]] = 'h'
-        self.map[self.head[0]][self.head[1]] = 's'
-        self.head = newhead
-        self.snake.insert(0, newhead)
-        tail = self.snake.pop()
-        self.map[tail[0]][tail[1]] = '_'
+        if self.map[newhead[0]][newhead[1]] == 'f':
+            self.spawn_fruit()
+#            self.grow()
+        self.move_head(newhead)
 
     def move_down(self):
         newhead = tuple((self.head[0] + 1, self.head[1]))
         if newhead[0] >= Map.SIZE or self.map[newhead[0]][newhead[1]] == 's':
             self.gameover = True
             return
-        self.map[newhead[0]][newhead[1]] = 'h'
-        self.map[self.head[0]][self.head[1]] = 's'
-        self.head = newhead
-        self.snake.insert(0, newhead)
-        tail = self.snake.pop()
-        self.map[tail[0]][tail[1]] = '_'
+        if self.map[newhead[0]][newhead[1]] == 'f':
+            self.spawn_fruit()
+#            self.grow()
+        self.move_head(newhead)
 
     def move_left(self):
         newhead = tuple((self.head[0], self.head[1] - 1))
         if newhead[1] < 0 or self.map[newhead[0]][newhead[1]] == 's':
             self.gameover = True
             return
-        self.map[newhead[0]][newhead[1]] = 'h'
-        self.map[self.head[0]][self.head[1]] = 's'
-        self.head = newhead
-        self.snake.insert(0, newhead)
-        tail = self.snake.pop()
-        self.map[tail[0]][tail[1]] = '_'
+        if self.map[newhead[0]][newhead[1]] == 'f':
+            self.spawn_fruit()
+#            self.grow()
+        self.move_head(newhead)
 
     def move_right(self):
         newhead = tuple((self.head[0], self.head[1] + 1))
         if newhead[1] >= Map.SIZE or self.map[newhead[0]][newhead[1]] == 's':
             self.gameover = True
             return
-        self.map[newhead[0]][newhead[1]] = 'h'
-        self.map[self.head[0]][self.head[1]] = 's'
-        self.head = newhead
-        self.snake.insert(0, newhead)
-        tail = self.snake.pop()
-        self.map[tail[0]][tail[1]] = '_'
+        if self.map[newhead[0]][newhead[1]] == 'f':
+            self.spawn_fruit()
+#            self.grow()
+            self.map[newhead[0]][newhead[1]] = '_'
+        self.move_head(newhead)
 
     def move_snake(self):
         if self.direction == 'up' and self.playing:
