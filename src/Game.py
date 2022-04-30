@@ -552,8 +552,11 @@ class Game:
         self.rectangles.clear()
         self.texts.clear()
         self.map_images.clear()
-        self.snake = Saves.load_save(save_name)
+        data = Saves.load_save(save_name)
+        self.snake = data["snake"]
+        self.fruit = (data["fruit"]["x"], data["fruit"]["y"])
         self.display_map()
+        self.playing = True
 
     def spawn_fruit(self):
         x = round(random.randrange(0, 40))

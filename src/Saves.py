@@ -22,13 +22,22 @@ def load_save(save_name):
     file_path = "%s%s%s" % (SAVES_DIR, save_name, SAVE_FILE_EXTENSION)
     with open(file_path, "r") as f:
         data = json.load(f)
-        return data["snake"]
+        return data
 
-def save(save_name, snake):
+def save(save_name, snake, fruit):
     file_path = "%s%s%s" % (SAVES_DIR, save_name, SAVE_FILE_EXTENSION)
     timestamp = int(datetime.now().timestamp())
     with open(file_path, "w+") as f:
-        f.write(json.dumps({"date": int(timestamp), "snake": snake}))
+        f.write(json.dumps(
+            {
+                "date": int(timestamp),
+                "snake": snake,
+                "fruit": {
+                    "x": fruit[0],
+                    "y": fruit[1]
+                }
+            }
+        ))
 
 def delete_save(save_name):
     file_path = "%s%s%s" % (SAVES_DIR, save_name, SAVE_FILE_EXTENSION)
