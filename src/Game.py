@@ -361,6 +361,81 @@ class Game:
             )
         )
 
+    def create_pause_menu_elements(self):
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Pause",
+                text_color=Colors.dark,
+                text_position=(100, 250),
+                text_size=35
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.new_game,
+                rect=Rectangle(
+                    position=(440, 100),
+                    color=(Colors.beige),
+                    hover_color=(Colors.light_green),
+                    size=(400, 100),
+                ),
+                text=Text(
+                    text="Resume",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(590, 130)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.to_load,
+                rect=Rectangle(
+                    position=(440, 250),
+                    color=(Colors.beige),
+                    hover_color=(Colors.light_green),
+                    size=(400, 100),
+                ),
+                text=Text(
+                    text="Save",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(610, 280)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.to_options,
+                rect=Rectangle(
+                    position=(440, 400),
+                    color=(Colors.beige),
+                    hover_color=(Colors.light_green),
+                    size=(400, 100),
+                ),
+                text=Text(
+                    text="Quit",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(610, 430)
+                ),
+            )
+        )
+
+    def to_pause_menu(self):
+        print("PAUSE")
+        self.context = Context.PAUSE
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.map_images.clear()
+        self.create_pause_menu_elements()
+        # self.playing = False
+
     def create_loadable_saves_menu(self, save_list):
         self.buttons.append(
             Button(
