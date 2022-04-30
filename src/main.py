@@ -15,7 +15,7 @@ while game.running:
             mouse = pygame.mouse.get_pos()
             game.check_buttons_click(mouse)
         if event.type == pygame.KEYDOWN:
-            game.change_direction(event.type)
+            game.change_direction(event.key)
     if game.playing == True and pygame.time.get_ticks() - ticks > game.speed:
         game.move_snake()
         ticks = pygame.time.get_ticks()

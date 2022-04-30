@@ -28,7 +28,7 @@ class Game:
     map = []
     fruits = []
     direction = 'up'
-    speed = 10
+    speed = 100
     snake = []
     head = tuple
     tail = tuple
@@ -433,24 +433,58 @@ class Game:
         tail = self.snake.pop()
         self.map[tail[0]][tail[1]] = '_'
 
+    def move_down(self):
+        newhead = tuple((self.head[0] + 1, self.head[1]))
+        if newhead[0] >= Map.SIZE or self.map[newhead[0]][newhead[1]] == 's':
+            self.gameover = True
+            return
+        self.map[newhead[0]][newhead[1]] = 'h'
+        self.map[self.head[0]][self.head[1]] = 's'
+        self.head = newhead
+        self.snake.insert(0, newhead)
+        tail = self.snake.pop()
+        self.map[tail[0]][tail[1]] = '_'
 
+    def move_left(self):
+        newhead = tuple((self.head[0], self.head[1] - 1))
+        if newhead[1] < 0 or self.map[newhead[0]][newhead[1]] == 's':
+            self.gameover = True
+            return
+        self.map[newhead[0]][newhead[1]] = 'h'
+        self.map[self.head[0]][self.head[1]] = 's'
+        self.head = newhead
+        self.snake.insert(0, newhead)
+        tail = self.snake.pop()
+        self.map[tail[0]][tail[1]] = '_'
+
+    def move_right(self):
+        newhead = tuple((self.head[0], self.head[1] + 1))
+        if newhead[1] >= Map.SIZE or self.map[newhead[0]][newhead[1]] == 's':
+            self.gameover = True
+            return
+        self.map[newhead[0]][newhead[1]] = 'h'
+        self.map[self.head[0]][self.head[1]] = 's'
+        self.head = newhead
+        self.snake.insert(0, newhead)
+        tail = self.snake.pop()
+        self.map[tail[0]][tail[1]] = '_'
 
     def move_snake(self):
         if self.direction == 'up' and self.playing:
             self.move_up()
-#        if self.direction == 'down':
-#            move_down()
-#        if self.direction == 'left':
-#            move_left()
-#        if self.direction == 'right':
-#            move_right()
+        if self.direction == 'down':
+            self.move_down()
+        if self.direction == 'left':
+            self.move_left()
+        if self.direction == 'right':
+            self.move_right()
 
     def change_direction(self, key):
-        if key == pygame.K_LEFT:
+        if key == pygame.K_LEFT and self.direction != 'right':
             self.direction = 'left'
-        elif key == pygame.K_RIGHT:
+        elif key == pygame.K_RIGHT and self.direction != 'left':
             self.direction = 'right'
-        elif key == pygame.K_UP:
+        elif key == pygame.K_UP and self.direction != 'down':
             self.direction = 'up'
-        elif key == pygame.K_DOWN:
+        elif key == pygame.K_DOWN and self.direction != 'up':
             self.direction = 'down'
