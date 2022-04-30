@@ -647,6 +647,7 @@ class Game:
         self.map_images.clear()
         data = Saves.load_save(save_name)
         self.snake = data["snake"]
+        self.direction = data["direction"]
         self.fruit = (data["fruit"]["x"], data["fruit"]["y"])
         self.display_map()
         self.playing = True

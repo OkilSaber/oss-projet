@@ -28,7 +28,7 @@ def load_save(save_name):
         return data
 
 
-def save(save_name, snake, fruit):
+def save(save_name, snake, fruit, direction):
     file_path = "%s%s%s" % (SAVES_DIR, save_name, SAVE_FILE_EXTENSION)
     timestamp = int(datetime.now().timestamp())
     if (os.path.isdir(SAVES_DIR) != True):
@@ -38,6 +38,7 @@ def save(save_name, snake, fruit):
             {
                 "date": int(timestamp),
                 "snake": snake,
+                "direction": direction,
                 "fruit": {
                     "x": fruit[0],
                     "y": fruit[1]
