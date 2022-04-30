@@ -1,6 +1,7 @@
 .venv
 __pycache__
 settings.json
+.saves
 build/
 dist/
 *.spec

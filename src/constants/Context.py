@@ -6,6 +6,7 @@ class Context(enum.Enum):
     IN_GAME = 2
     PAUSE = 3
     OPTIONS = 4
+    LOAD_MAP = 5
     OPTIONS_WAITING_INPUT_UP = 5
     OPTIONS_WAITING_INPUT_DOWN = 6
     OPTIONS_WAITING_INPUT_LEFT = 7
