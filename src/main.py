@@ -2,6 +2,7 @@ from operator import truediv
 from shutil import move
 from Game import Game
 import pygame
+from constants.Context import Context
 
 pygame.init()
 game = Game()
@@ -16,6 +17,7 @@ while game.running:
             game.check_buttons_click(mouse)
         if event.type == pygame.KEYDOWN:
             game.change_direction(event.key)
+        game.check_key_binding_input(event)
     if game.playing == True and pygame.time.get_ticks() - ticks > game.speed:
         game.move_snake()
         ticks = pygame.time.get_ticks()

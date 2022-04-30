@@ -162,6 +162,60 @@ class Game:
                 text_size=35
             )
         )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Rebind controls",
+                text_color=Colors.dark,
+                text_position=(100, 300),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Up",
+                text_color=Colors.dark,
+                text_position=(125, 350),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Down",
+                text_color=Colors.dark,
+                text_position=(125, 400),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Left",
+                text_color=Colors.dark,
+                text_position=(125, 450),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Right",
+                text_color=Colors.dark,
+                text_position=(125, 500),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Pause",
+                text_color=Colors.dark,
+                text_position=(125, 550),
+                text_size=35
+            )
+        )
         self.buttons.append(
             Button(
                 on_click=Button.to_main_menu,
@@ -213,6 +267,96 @@ class Game:
                     text_color=Colors.dark,
                     text_size=35,
                     text_position=(415, 200)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_up,
+                rect=Rectangle(
+                    position=(270, 345),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["up"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 350)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_down,
+                rect=Rectangle(
+                    position=(270, 395),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["down"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 400)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_left,
+                rect=Rectangle(
+                    position=(270, 445),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["left"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 450)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_right,
+                rect=Rectangle(
+                    position=(270, 495),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["right"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 500)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_pause,
+                rect=Rectangle(
+                    position=(270, 545),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["pause"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(305, 550)
                 ),
             )
         )
@@ -515,3 +659,61 @@ class Game:
             self.direction = 'up'
         elif key == pygame.K_DOWN and self.direction != 'up':
             self.direction = 'down'
+    def change_binding_up(self, key):
+        self.update_settings("up", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_down(self, key):
+        self.update_settings("down", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_left(self, key):
+        self.update_settings("left", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_right(self, key):
+        self.update_settings("right", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_pause(self, key):
+        self.update_settings("pause", key)
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def check_key_binding_input(self, event):
+        if event.type == pygame.KEYDOWN:
+            match self.context:
+                case Context.OPTIONS_WAITING_INPUT_UP:
+                    self.change_binding_up(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_DOWN:
+                    self.change_binding_down(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_LEFT:
+                    self.change_binding_left(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_RIGHT:
+                    self.change_binding_right(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_PAUSE:
+                    self.change_binding_pause(pygame.key.name(event.key))

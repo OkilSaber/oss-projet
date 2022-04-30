@@ -3,6 +3,7 @@ import re
 from elements.Rectangle import Rectangle
 from elements.Text import Text
 from typing import Tuple
+from constants.Context import Context
 
 
 class Button:
@@ -93,6 +94,22 @@ class Button:
             True,
             game.texts[1].text_color
         )
+
+
+    def change_context_up(self, game):
+        game.context = Context.OPTIONS_WAITING_INPUT_UP
+
+    def change_context_down(self, game):
+        game.context = Context.OPTIONS_WAITING_INPUT_DOWN
+
+    def change_context_left(self, game):
+        game.context = Context.OPTIONS_WAITING_INPUT_LEFT
+
+    def change_context_right(self, game):
+        game.context = Context.OPTIONS_WAITING_INPUT_RIGHT
+
+    def change_context_pause(self, game):
+        game.context = Context.OPTIONS_WAITING_INPUT_PAUSE
 
     def click(self, game):
         game.play_sound("assets/button_click.mp3")
