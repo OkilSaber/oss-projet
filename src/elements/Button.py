@@ -56,11 +56,11 @@ class Button:
         game.play_sound("assets/button_click.mp3")
         game.to_main_menu()
     
-    def delete_map(self, game):
+    def delete_save(self, game):
         game.play_sound("assets/button_click.mp3")
         game.delete_map(self.metadata)
     
-    def play_this_map(self, game):
+    def play_this_save(self, game):
         game.play_sound("assets/button_click.mp3")
         game.play_game_from_load(self.metadata)
     
