@@ -3,6 +3,7 @@ from datetime import datetime
 from constants.Assets import Assets
 import os
 import json
+import platform
 
 SAVES_DIR = ".saves/"
 SAVE_FILE_EXTENSION = ".save.json"
@@ -22,7 +23,11 @@ def list_saves():
 
 
 def load_save(save_name):
-    file_path = "%s%s" % (save_name, SAVE_FILE_EXTENSION)
+    print(save_name)
+    if (platform.system == "Windows"):
+        file_path = "%s%s" % (save_name, SAVE_FILE_EXTENSION)
+    else:
+        file_path = "%s%s%s" % (SAVES_DIR, save_name, SAVE_FILE_EXTENSION)
     with open(file_path, "r") as f:
         data = json.load(f)
         return data
