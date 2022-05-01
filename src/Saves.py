@@ -53,6 +53,9 @@ def save(save_name, snake, fruit, direction):
 
 
 def delete_save(save_name):
-    file_path = "%s%s" % (save_name, SAVE_FILE_EXTENSION)
+    if (platform.system() == "Windows"):
+        file_path = "%s%s" % (save_name, SAVE_FILE_EXTENSION)
+    else:
+        file_path = "%s%s%s" % (SAVES_DIR, save_name, SAVE_FILE_EXTENSION)
     if os.path.exists(file_path):
         os.remove(file_path)
