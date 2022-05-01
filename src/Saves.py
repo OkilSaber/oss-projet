@@ -23,8 +23,7 @@ def list_saves():
 
 
 def load_save(save_name):
-    print(save_name)
-    if (platform.system == "Windows"):
+    if (platform.system() == "Windows"):
         file_path = "%s%s" % (save_name, SAVE_FILE_EXTENSION)
     else:
         file_path = "%s%s%s" % (SAVES_DIR, save_name, SAVE_FILE_EXTENSION)
