@@ -715,6 +715,7 @@ class Game:
         self.snake = data["snake"]
         self.direction = data["direction"]
         self.fruit = (data["fruit"]["x"], data["fruit"]["y"])
+        self.score = (len(self.snake) - 3) * 10
         self.display_map()
         self.playing = True
 
@@ -807,6 +808,7 @@ class Game:
             self.ranking["ranking"].pop()
         self.ranking["ranking"].append({"name": self.player, "score": self.score})
         self.ranking["ranking"].sort(key=lambda x: x["score"], reverse=True)
+        self.player = ''
         ranking_file = open('.ranking.json', 'w')
         dump(self.ranking, ranking_file)
         self.to_main_menu()
@@ -859,7 +861,7 @@ class Game:
             ),
         )
         try:
-            if self.score > self.ranking["ranking"][-1]["score"]:
+            if len(self.ranking['ranking']) < 10 or self.score > self.ranking["ranking"][-1]["score"]:
                 high = True
                 self.add_rank_button(high)
         except Exception as e:

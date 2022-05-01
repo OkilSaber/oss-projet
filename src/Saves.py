@@ -22,7 +22,8 @@ def list_saves():
 
 
 def load_save(save_name):
-    file_path = "%s%s" % (save_name, SAVE_FILE_EXTENSION)
+    file_path = "%s%s%s" % (SAVES_DIR, save_name, SAVE_FILE_EXTENSION)
+    print(file_path)
     with open(file_path, "r") as f:
         data = json.load(f)
         return data
