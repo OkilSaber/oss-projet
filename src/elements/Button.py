@@ -1,9 +1,11 @@
 import pygame
 import re
+import Saves
 from elements.Rectangle import Rectangle
 from elements.Text import Text
 from typing import Tuple
 from constants.Context import Context
+
 
 
 class Button:
@@ -58,7 +60,7 @@ class Button:
 
     def delete_save(self, game):
         game.play_sound("assets/button_click.mp3")
-        game.delete_map(self.metadata)
+        game.delete_save(self.metadata)
 
     def play_this_save(self, game):
         game.play_sound("assets/button_click.mp3")
@@ -121,3 +123,27 @@ class Button:
 
     def click(self, game):
         game.play_sound("assets/button_click.mp3")
+
+    def pause_resume_game(self, game):
+        game.buttons.clear()
+        game.rectangles.clear()
+        game.texts.clear()
+        game.map_images.clear()
+        game.playing = True
+        game.context = Context.IN_GAME
+
+    def pause_save_game(self, game):
+        Saves.save(game.save_count, game.snake, game.fruit, game.direction)
+        game.save_count += 1
+        game.to_main_menu()
+
+    def pause_restart_game(self, game):
+        game.buttons.clear()
+        game.rectangles.clear()
+        game.texts.clear()
+        game.map_images.clear()
+        game.direction = "up"
+        game.new_game()
+
+    def pause_quit_game(self, game):
+        game.to_main_menu()

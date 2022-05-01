@@ -3,17 +3,19 @@
 
 This is a simple snake game made in python 3.10 using the pygame library.
 
-To run the game in dev mode run this command:
+To run the game in dev mode, **PYTHON 3.10 IS A MUST**, run this command:
 ```
 ./script/start.sh
 ```
-To build an executable run this command:
+To build an executable, **PYTHON 3.10 IS A MUST**, run this command:
 ```
 ./script/build.sh
 ```
 This will create an executable package suited for your OS (Linux, Windows and macos are supported). You can find the executable in this location: ``build/dist/``.
 
 The ``Snake`` file is the executable.
+
+If you don't have python 3.10 or above installed you can still download a pre-packaged release of the game.
 
 Please note that if you want to move this executable somewhere else you ****MUST**** move the assets folder with it.
 

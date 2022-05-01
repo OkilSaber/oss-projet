@@ -20,6 +20,10 @@ while game.running:
             game.change_direction(event.key)
             if game.gameover:
                 game.player_name(event)
+            if game.context == Context.IN_GAME:
+                game.change_direction(event.key)
+                if event.key == pygame.key.key_code(game.settings['pause']):
+                    game.to_pause_menu()
         game.check_key_binding_input(event)
     if game.gameover == True:
         game.loose(event)

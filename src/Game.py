@@ -39,6 +39,7 @@ class Game:
     gameover = False
     player = ''
     score = 0
+    save_count = 0
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
@@ -366,6 +367,98 @@ class Game:
             )
         )
 
+    def create_pause_menu_elements(self):
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Pause",
+                text_color=Colors.dark,
+                text_position=(100, 250),
+                text_size=35
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.pause_resume_game,
+                rect=Rectangle(
+                    position=(440, 100),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(400, 100),
+                ),
+                text=Text(
+                    text="Resume",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(590, 130)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.pause_save_game,
+                rect=Rectangle(
+                    position=(440, 250),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(400, 100),
+                ),
+                text=Text(
+                    text="Save",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(610, 280)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.pause_restart_game,
+                rect=Rectangle(
+                    position=(440, 400),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(400, 100),
+                ),
+                text=Text(
+                    text="Restart",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(600, 430)
+                ),
+            )
+        )
+        self.buttons.append(
+                    Button(
+                        on_click=Button.pause_quit_game,
+                        rect=Rectangle(
+                            position=(440, 550),
+                            color=(Colors.beige),
+                            hover_color=(Colors.white),
+                            size=(400, 100),
+                        ),
+                        text=Text(
+                            text="Quit",
+                            font="Corbel",
+                            text_color=Colors.dark,
+                            text_size=35,
+                            text_position=(610, 580)
+                        ),
+                    )
+                )
+
+    def to_pause_menu(self):
+        self.context = Context.PAUSE
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.map_images.clear()
+        self.create_pause_menu_elements()
+        self.playing = False
+
     def create_loadable_saves_menu(self, save_list):
         self.buttons.append(
             Button(
@@ -620,6 +713,7 @@ class Game:
         self.map_images.clear()
         data = Saves.load_save(save_name)
         self.snake = data["snake"]
+        self.direction = data["direction"]
         self.fruit = (data["fruit"]["x"], data["fruit"]["y"])
         self.display_map()
         self.playing = True
