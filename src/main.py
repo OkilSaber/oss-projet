@@ -7,6 +7,7 @@ from constants.Context import Context
 pygame.init()
 game = Game()
 ticks = pygame.time.get_ticks()
+clock = pygame.time.Clock()
 while game.running:
     game.screen.blit(game.background_image_surface, (0, 0))
     for event in pygame.event.get():
@@ -17,9 +18,11 @@ while game.running:
             game.check_buttons_click(mouse)
         if event.type == pygame.KEYDOWN:
             game.change_direction(event.key)
+            if game.gameover:
+                game.player_name(event)
         game.check_key_binding_input(event)
     if game.gameover == True:
-        game.loose()
+        game.loose(event)
         game.playing = False
     elif game.playing == True and game.gameover == False and pygame.time.get_ticks() - ticks > game.speed:
         ticks = pygame.time.get_ticks()
