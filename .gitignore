@@ -5,3 +5,4 @@ settings.json
 build/
 dist/
 *.spec
+.ranking.json

@@ -33,8 +33,12 @@ class Game:
     fruit = (0, 0)
     direction = 'up'
     speed = 75
+    current_move = 'up'
+    ranking = {"ranking": []}
     playing = bool
     gameover = False
+    player = ''
+    score = 0
     save_count = 0
 
     def __init__(self):
@@ -46,6 +50,7 @@ class Game:
             Assets.menu_background_image
         )
         self.load_settings()
+        self.load_score()
         pygame.mixer.init()
         pygame.mixer.music.load(Assets.background_music)
         pygame.mixer.music.play(-1)
@@ -108,7 +113,7 @@ class Game:
         )
         self.buttons.append(
             Button(
-                on_click=Button.click,
+                on_click=Button.to_ranking,
                 rect=Rectangle(
                     position=(200, 476),
                     color=(Colors.beige),
@@ -522,6 +527,7 @@ class Game:
     def display_map(self):
         if self.snake == None:
             return
+        self.texts.clear()
         start_x = (1280-(17*40))/2
         start_y = ((720-(17*40))/2)
         self.map_images.append(MapImage(start_x + 17 * self.fruit[0], start_y + 17 * self.fruit[1], Assets.apple_image))
@@ -590,7 +596,67 @@ class Game:
                     self.map_images.append(MapImage(x, y, Assets.body_topleft))
                 else:
                     self.map_images.append(MapImage(x, y, Assets.body_horizontal))
+        self.texts.append(
+            Text(
+                text="Score: %s" %self.score ,
+                font="Corbel",
+                text_color=Colors.black,
+                text_size=25,
+                text_position=(50, 50)
+            ),
+        )
 
+    def to_ranking(self):
+        self.context = Context.OPTIONS
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.map_images.clear()
+        self.buttons.append(
+            Button(
+                on_click=Button.to_main_menu,
+                rect=Rectangle(
+                    position=(20, 20),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(200, 100),
+                ),
+                text=Text(
+                    text="Back",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(75, 50)
+                ),
+            )
+        )
+
+        y = 125
+        for score in self.ranking["ranking"]:
+            self.rectangles.append(
+                Rectangle(
+                    position=(150, y),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(400, 50),
+                ),
+            )
+            self.texts.append(
+                Text(
+                    text="%s: %s" %(score["name"], score["score"]),
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(170, y + 15)
+                ),
+            )
+            y+= 60
+
+    def player_name(self, event):
+        if event.key == pygame.K_BACKSPACE and len(self.player) > 0:
+            self.player = self.player[:-1]
+        elif len(self.player) <= 10:
+            self.player += event.unicode
 
     def check_buttons_click(self, position: Tuple[int, int]):
         for button in self.buttons:
@@ -634,11 +700,11 @@ class Game:
         self.map_images.clear()
         saves = Saves.list_saves()
         self.create_loadable_saves_menu(saves)
-    
+
     def delete_save(self, save_name):
         Saves.delete_save(save_name)
         self.to_load()
-    
+
     def play_game_from_load(self, save_name):
         self.context = Context.IN_GAME
         self.buttons.clear()
@@ -649,6 +715,7 @@ class Game:
         self.snake = data["snake"]
         self.direction = data["direction"]
         self.fruit = (data["fruit"]["x"], data["fruit"]["y"])
+        self.score = (len(self.snake) - 3) * 10
         self.display_map()
         self.playing = True
 
@@ -661,7 +728,12 @@ class Game:
         self.fruit = (x, y)
 
     def new_game(self):
+        self.playing = True
+        self.gameover = False
+        self.score = 0
         self.snake = []
+        self.direction = 'up'
+        self.current_move = 'up'
         self.snake.append({"x": 40/2, "y": 40/2})
         self.snake.append({"x": 40/2, "y": 40/2+1})
         self.snake.append({"x": 40/2, "y": 40/2+2})
@@ -672,15 +744,26 @@ class Game:
         self.map_images.clear()
         self.spawn_fruit()
         self.display_map()
-        self.playing = True
 
     def to_main_menu(self):
         self.context = Context.MAIN_MENU
+        self.gameover = False
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
         self.map_images.clear()
         self.create_main_menu_buttons()
+
+    def load_score(self):
+        try:
+            self.ranking = load(open(".ranking.json"))
+            self.ranking["ranking"].sort(key=lambda x: x["score"], reverse=True)
+        except Exception as e:
+            ranking = {
+                "ranking": []
+            }
+            ranking_file = open('.ranking.json', 'w')
+            dump(ranking, ranking_file)
 
     def load_settings(self):
         try:
@@ -705,16 +788,108 @@ class Game:
         self.settings[key] = value
         dump(self.settings, open('settings.json', 'w'))
 
-    def move_head(self, newhead, cut_tail):
+    def move_head(self, newhead, cut_tail, grow):
+        if grow:
+            self.score += 10
         self.snake.insert(0, {"x": newhead[0], "y": newhead[1]})
         if cut_tail:
             self.snake.pop()
-    
+
     def is_snake(self, x, y):
         for elem in self.snake:
             if elem["x"] == x and elem["y"] == y:
                 return True
         return False
+
+    def save_rank(self):
+        if len(self.player) == 0:
+            return
+        if len(self.ranking["ranking"]) >= 10:
+            self.ranking["ranking"].pop()
+        self.ranking["ranking"].append({"name": self.player, "score": self.score})
+        self.ranking["ranking"].sort(key=lambda x: x["score"], reverse=True)
+        self.player = ''
+        ranking_file = open('.ranking.json', 'w')
+        dump(self.ranking, ranking_file)
+        self.to_main_menu()
+
+    def add_rank_button(self, high):
+        x, y = self.screen.get_size()
+        self.buttons.append(
+            Button(
+                on_click=Button.save_rank if high else Button.to_main_menu,
+                rect=Rectangle(
+                    position=(x/2, y/2 + 100),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(100, 50),
+                ),
+                text=Text(
+                    text="Enter" if high else "Back",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(x/2 + 25, y/2 + 110)
+                ),
+            )
+        )
+
+    def loose(self, event):
+        x, y = self.screen.get_size()
+        self.context = Context.MAIN_MENU
+        high = False
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.map_images.clear()
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Gameover",
+                text_color=Colors.black,
+                text_position=(x/2 - 35, y/2 + 50),
+                text_size=50
+            )
+        )
+        self.texts.append(
+            Text(
+                text="Score: %s" %self.score ,
+                font="Corbel",
+                text_color=Colors.dark,
+                text_size=50,
+                text_position=(x/2 - 20, y/2 - 20)
+            ),
+        )
+        try:
+            if len(self.ranking['ranking']) < 10 or self.score > self.ranking["ranking"][-1]["score"]:
+                high = True
+                self.add_rank_button(high)
+        except Exception as e:
+            high = True
+            self.add_rank_button(high)
+
+        if not high:
+            self.add_rank_button(high)
+        if high:
+            self.texts.append(
+                Text(
+                    text="Enter your name: %s" %self.score ,
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=50,
+                    text_position=(x/2 - 100, y/2 - 300)
+                ),
+            )
+            self.texts.append(
+                Text(
+                    text=self.player,
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=50,
+                    text_position=(x/2 - 50, y/2 - 200)
+                ),
+            )
+
 
     def move_up(self):
         newhead = (self.snake[0]["x"], self.snake[0]["y"] - 1)
@@ -722,11 +897,10 @@ class Game:
             self.gameover = True
             return
         if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
-            self.move_head(newhead, False)
+            self.move_head(newhead, False, True)
             self.spawn_fruit()
         else:
-            self.move_head(newhead, True)
-            
+            self.move_head(newhead, True, False)
 
     def move_down(self):
         newhead = (self.snake[0]["x"], self.snake[0]["y"] + 1)
@@ -734,10 +908,10 @@ class Game:
             self.gameover = True
             return
         if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
-            self.move_head(newhead, False)
+            self.move_head(newhead, False, True)
             self.spawn_fruit()
         else:
-            self.move_head(newhead, True)
+            self.move_head(newhead, True, False)
 
     def move_left(self):
         newhead = (self.snake[0]["x"] - 1, self.snake[0]["y"])
@@ -745,10 +919,10 @@ class Game:
             self.gameover = True
             return
         if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
-            self.move_head(newhead, False)
+            self.move_head(newhead, False, True)
             self.spawn_fruit()
         else:
-            self.move_head(newhead, True)
+            self.move_head(newhead, True, False)
 
     def move_right(self):
         newhead = (self.snake[0]["x"] + 1, self.snake[0]["y"])
@@ -756,30 +930,35 @@ class Game:
             self.gameover = True
             return
         if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
-            self.move_head(newhead, False)
+            self.move_head(newhead, False, True)
             self.spawn_fruit()
         else:
-            self.move_head(newhead, True)
+            self.move_head(newhead, True, False)
 
     def move_snake(self):
         if self.direction == 'up' and self.playing:
             self.move_up()
+            self.current_move = 'up'
         if self.direction == 'down':
             self.move_down()
+            self.current_move = 'down'
         if self.direction == 'left':
             self.move_left()
+            self.current_move = 'left'
         if self.direction == 'right':
             self.move_right()
+            self.current_move = 'right'
 
     def change_direction(self, key):
-        if key == pygame.key.key_code(self.settings['left']) and self.direction != 'right':
+        if key == pygame.key.key_code(self.settings['left']) and self.current_move != 'right':
             self.direction = 'left'
-        elif key == pygame.key.key_code(self.settings['right']) and self.direction != 'left':
+        elif key == pygame.key.key_code(self.settings['right']) and self.current_move != 'left':
             self.direction = 'right'
-        elif key == pygame.key.key_code(self.settings['up']) and self.direction != 'down':
+        elif key == pygame.key.key_code(self.settings['up']) and self.current_move != 'down':
             self.direction = 'up'
-        elif key == pygame.key.key_code(self.settings['down']) and self.direction != 'up':
+        elif key == pygame.key.key_code(self.settings['down']) and self.current_move != 'up':
             self.direction = 'down'
+        pygame.event.clear()
 
     def change_binding_up(self, key):
         self.update_settings("up", key)

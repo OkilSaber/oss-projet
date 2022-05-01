@@ -49,7 +49,7 @@ class Button:
     def to_options(self, game):
         game.play_sound("assets/button_click.mp3")
         game.to_options()
-    
+
     def to_load(self, game):
         game.play_sound("assets/button_click.mp3")
         game.to_load()
@@ -57,18 +57,26 @@ class Button:
     def to_main_menu(self, game):
         game.play_sound("assets/button_click.mp3")
         game.to_main_menu()
-    
+
     def delete_save(self, game):
         game.play_sound("assets/button_click.mp3")
         game.delete_save(self.metadata)
-    
+
     def play_this_save(self, game):
         game.play_sound("assets/button_click.mp3")
         game.play_game_from_load(self.metadata)
-    
+
     def new_game(self, game):
         game.play_sound("assets/button_click.mp3")
         game.new_game()
+
+    def save_rank(self, game):
+        game.play_sound("assets/button_click.mp3")
+        game.save_rank()
+
+    def to_ranking(self, game):
+        game.play_sound("assets/button_click.mp3")
+        game.to_ranking()
 
     def volume_up(self, game):
         current_volume = pygame.mixer.music.get_volume()
@@ -123,7 +131,7 @@ class Button:
         game.map_images.clear()
         game.playing = True
         game.context = Context.IN_GAME
-    
+
     def pause_save_game(self, game):
         Saves.save(game.save_count, game.snake, game.fruit, game.direction)
         game.save_count += 1
