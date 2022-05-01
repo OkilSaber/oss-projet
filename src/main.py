@@ -16,7 +16,10 @@ while game.running:
             mouse = pygame.mouse.get_pos()
             game.check_buttons_click(mouse)
         if event.type == pygame.KEYDOWN:
-            game.change_direction(event.key)
+            if game.context == Context.IN_GAME:
+                game.change_direction(event.key)
+                if event.key == pygame.key.key_code(game.settings['pause']):
+                    game.to_pause_menu()
         game.check_key_binding_input(event)
     if game.playing == True and pygame.time.get_ticks() - ticks > game.speed:
         game.move_snake()
