@@ -1,4 +1,5 @@
 from hashlib import new
+from xmlrpc.client import MAXINT
 import pygame
 import re
 from constants.Assets import Assets
@@ -113,7 +114,7 @@ class Game:
         )
         self.buttons.append(
             Button(
-                on_click=Button.to_ranking,
+                on_click=Button.autoplay,
                 rect=Rectangle(
                     position=(200, 476),
                     color=(Colors.beige),
@@ -936,6 +937,7 @@ class Game:
             self.move_head(newhead, True, False)
 
     def move_snake(self):
+        print(self.shortestDir())
         if self.direction == 'up' and self.playing:
             self.move_up()
             self.current_move = 'up'
@@ -1018,3 +1020,17 @@ class Game:
                     self.change_binding_right(pygame.key.name(event.key))
                 case Context.OPTIONS_WAITING_INPUT_PAUSE:
                     self.change_binding_pause(pygame.key.name(event.key))
+
+    def shortestDir(self):
+        path = []
+        if (self.direction != 'left'):
+            path.append((abs(self.snake[0]["x"] + 1 - self.fruit[0]) + abs(self.snake[0]["y"] - self.fruit[1]), 'right'))
+        if (self.direction != 'right'):
+            path.append((abs(self.snake[0]["x"] - 1 - self.fruit[0]) + abs(self.snake[0]["y"] - self.fruit[1]), 'left'))
+        if (self.direction != 'up'):
+            path.append((abs(self.snake[0]["x"] - self.fruit[0]) + abs(self.snake[0]["y"] + 1 - self.fruit[1]), 'down'))
+        if (self.direction != 'down'):
+            path.append((abs(self.snake[0]["x"] - self.fruit[0]) + abs(self.snake[0]["y"] - 1 - self.fruit[1]), 'up'))
+        return min(path, key = lambda t: t[0])
+
+#    def autoShortest(self):

@@ -78,6 +78,10 @@ class Button:
         game.play_sound("assets/button_click.mp3")
         game.to_ranking()
 
+    def autoplay(self, game):
+        game.play_sound("assets/button_click.mp3")
+        game.autoplay()
+
     def volume_up(self, game):
         current_volume = pygame.mixer.music.get_volume()
         pygame.mixer.music.set_volume(current_volume + 0.1)
