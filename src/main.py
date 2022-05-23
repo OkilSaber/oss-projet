@@ -16,7 +16,7 @@ while game.running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse = pygame.mouse.get_pos()
             game.check_buttons_click(mouse)
-        if event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN and game.context != Context.AUTO_PLAY:
             game.change_direction(event.key)
             if game.gameover:
                 game.player_name(event)
@@ -24,7 +24,11 @@ while game.running:
                 game.change_direction(event.key)
                 if event.key == pygame.key.key_code(game.settings['pause']):
                     game.to_pause_menu()
+#            if event.type == pygame.KEYDOWN and event.key == pygame.key.key_code(game.settings['pause']):
+#                game.to_pause_menu()
         game.check_key_binding_input(event)
+    if game.context == Context.AUTO_PLAY:
+        game.autoShortest()
     if game.gameover == True:
         game.loose(event)
         game.playing = False
