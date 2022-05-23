@@ -62,10 +62,10 @@ class Game:
             Button(
                 on_click=Button.new_game,
                 rect=Rectangle(
-                    position=(200, 44),
+                    position=(200, 25),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
-                    size=(880, 100),
+                    size=(880, 75),
                 ),
                 text=Text(
                     text="Play",
@@ -80,10 +80,10 @@ class Game:
             Button(
                 on_click=Button.to_load,
                 rect=Rectangle(
-                    position=(200, 188),
+                    position=(200, 225),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
-                    size=(880, 100),
+                    size=(880, 75),
                 ),
                 text=Text(
                     text="Load",
@@ -728,7 +728,7 @@ class Game:
                 return self.spawn_fruit()
         self.fruit = (x, y)
 
-    def new_game(self):
+    def new_game(self, context):
         self.playing = True
         self.gameover = False
         self.score = 0
@@ -738,7 +738,7 @@ class Game:
         self.snake.append({"x": 40/2, "y": 40/2})
         self.snake.append({"x": 40/2, "y": 40/2+1})
         self.snake.append({"x": 40/2, "y": 40/2+2})
-        self.context = Context.IN_GAME
+        self.context = context
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -837,7 +837,6 @@ class Game:
 
     def loose(self, event):
         x, y = self.screen.get_size()
-        self.context = Context.MAIN_MENU
         high = False
         self.buttons.clear()
         self.rectangles.clear()
@@ -862,12 +861,13 @@ class Game:
             ),
         )
         try:
-            if len(self.ranking['ranking']) < 10 or self.score > self.ranking["ranking"][-1]["score"]:
+            if len(self.ranking['ranking']) < 10 or self.score > self.ranking["ranking"][-1]["score"] and self.context != Context.AUTO_PLAY:
                 high = True
                 self.add_rank_button(high)
         except Exception as e:
-            high = True
-            self.add_rank_button(high)
+            if self.context != Context.AUTO_PLAY:
+                high = True
+                self.add_rank_button(high)
 
         if not high:
             self.add_rank_button(high)
@@ -937,7 +937,6 @@ class Game:
             self.move_head(newhead, True, False)
 
     def move_snake(self):
-        print(self.shortestDir())
         if self.direction == 'up' and self.playing:
             self.move_up()
             self.current_move = 'up'
@@ -1024,13 +1023,12 @@ class Game:
     def shortestDir(self):
         path = []
         if (self.direction != 'left'):
-            path.append((abs(self.snake[0]["x"] + 1 - self.fruit[0]) + abs(self.snake[0]["y"] - self.fruit[1]), 'right'))
+            path.append((abs(self.snake[0]["x"] + 1 - self.fruit[0]) + abs(self.snake[0]["y"] - self.fruit[1]), 'right', (self.snake[0]["x"] + 1, self.snake[0]["y"])))
         if (self.direction != 'right'):
-            path.append((abs(self.snake[0]["x"] - 1 - self.fruit[0]) + abs(self.snake[0]["y"] - self.fruit[1]), 'left'))
+            path.append((abs(self.snake[0]["x"] - 1 - self.fruit[0]) + abs(self.snake[0]["y"] - self.fruit[1]), 'left', (self.snake[0]["x"] - 1, self.snake[0]["y"])))
         if (self.direction != 'up'):
-            path.append((abs(self.snake[0]["x"] - self.fruit[0]) + abs(self.snake[0]["y"] + 1 - self.fruit[1]), 'down'))
+            path.append((abs(self.snake[0]["x"] - self.fruit[0]) + abs(self.snake[0]["y"] + 1 - self.fruit[1]), 'down', (self.snake[0]["x"], self.snake[0]["y"] + 1)))
         if (self.direction != 'down'):
-            path.append((abs(self.snake[0]["x"] - self.fruit[0]) + abs(self.snake[0]["y"] - 1 - self.fruit[1]), 'up'))
-        return min(path, key = lambda t: t[0])
+            path.append((abs(self.snake[0]["x"] - self.fruit[0]) + abs(self.snake[0]["y"] - 1 - self.fruit[1]), 'up', (self.snake[0]["x"], self.snake[0]["y"] - 1)))
+        return self.pickDir(path)
 
-#    def autoShortest(self):
