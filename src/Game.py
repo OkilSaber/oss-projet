@@ -29,15 +29,21 @@ class Game:
     texts = []
     rectangles = []
     map_images = []
-    snake = []
     fruit = (0, 0)
+
+    player = ''
+    snake = []
     direction = 'up'
-    speed = 75
     current_move = 'up'
+
+    autoplayer_snake = []
+    autoplayer_direction = ''
+    autoplayer_current_move = ''
+
+    speed = 75
     ranking = {"ranking": []}
     playing = bool
     gameover = False
-    player = ''
     score = 0
     save_count = 0
 
@@ -61,17 +67,35 @@ class Game:
             Button(
                 on_click=Button.new_game,
                 rect=Rectangle(
-                    position=(200, 44),
+                    position=(200, 25),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
-                    size=(880, 100),
+                    size=(880, 75),
                 ),
                 text=Text(
                     text="Play",
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(640, 94)
+                    text_position=(640, 50)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.new_game_autoplayer,
+                rect=Rectangle(
+                    position=(200, 125),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(880, 75),
+                ),
+                text=Text(
+                    text="Autoplayer",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(640, 150)
                 ),
             )
         )
@@ -79,17 +103,17 @@ class Game:
             Button(
                 on_click=Button.to_load,
                 rect=Rectangle(
-                    position=(200, 188),
+                    position=(200, 225),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
-                    size=(880, 100),
+                    size=(880, 75),
                 ),
                 text=Text(
                     text="Load",
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(640, 238)
+                    text_position=(640, 250)
                 ),
             )
         )
@@ -97,17 +121,17 @@ class Game:
             Button(
                 on_click=Button.to_options,
                 rect=Rectangle(
-                    position=(200, 332),
+                    position=(200, 325),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
-                    size=(880, 100),
+                    size=(880, 75),
                 ),
                 text=Text(
                     text="Options",
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(640, 382)
+                    text_position=(640, 350)
                 ),
             )
         )
@@ -115,17 +139,17 @@ class Game:
             Button(
                 on_click=Button.to_ranking,
                 rect=Rectangle(
-                    position=(200, 476),
+                    position=(200, 425),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
-                    size=(880, 100),
+                    size=(880, 75),
                 ),
                 text=Text(
                     text="Ranking",
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(640, 526)
+                    text_position=(640, 450)
                 ),
             )
         )
@@ -133,17 +157,17 @@ class Game:
             Button(
                 on_click=Button.quit,
                 rect=Rectangle(
-                    position=(200, 620),
+                    position=(200, 525),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
-                    size=(880, 100),
+                    size=(880, 75),
                 ),
                 text=Text(
                     text="Exit",
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(640, 670)
+                    text_position=(640, 550)
                 ),
             )
         )
@@ -523,9 +547,9 @@ class Game:
             )
 
             y+= 120
-
-    def display_map(self):
-        if self.snake == None:
+    
+    def display_snake(self, snk):
+        if snk == None:
             return
         self.texts.clear()
         start_x = (1280-(17*40))/2
@@ -540,25 +564,25 @@ class Game:
             )
         )
 
-        x = start_x + 17 * (self.snake[0]["x"])
-        y = start_y + 17 * (self.snake[0]["y"])
-        if self.snake[0]["y"] > self.snake[1]["y"]:
+        x = start_x + 17 * (snk[0]["x"])
+        y = start_y + 17 * (snk[0]["y"])
+        if snk[0]["y"] > snk[1]["y"]:
             self.map_images.append(MapImage(x, y, Assets.head_down))
-        elif self.snake[0]["y"] < self.snake[1]["y"]:
+        elif snk[0]["y"] < snk[1]["y"]:
             self.map_images.append(MapImage(x, y, Assets.head_up))
-        elif self.snake[0]["x"] > self.snake[1]["x"]:
+        elif snk[0]["x"] > snk[1]["x"]:
             self.map_images.append(MapImage(x, y, Assets.head_right))
         else:
             self.map_images.append(MapImage(x, y, Assets.head_left))
 
-        for i, curr in enumerate(self.snake[1:]):
+        for i, curr in enumerate(snk[1:]):
             i += 1
             x = start_x + 17 * (curr["x"])
             y = start_y + 17 * (curr["y"])
-            prev = self.snake[i - 1]
+            prev = snk[i - 1]
             next = None
-            if i + 1 < len(self.snake):
-                next = self.snake[i + 1]
+            if i + 1 < len(snk):
+                next = snk[i + 1]
 
             if prev["y"] > curr["y"]: # from down
                 if next == None:
@@ -596,15 +620,14 @@ class Game:
                     self.map_images.append(MapImage(x, y, Assets.body_topleft))
                 else:
                     self.map_images.append(MapImage(x, y, Assets.body_horizontal))
-        self.texts.append(
-            Text(
-                text="Score: %s" %self.score ,
-                font="Corbel",
-                text_color=Colors.black,
-                text_size=25,
-                text_position=(50, 50)
-            ),
-        )
+
+    def display_map(self):
+        if self.snake == None:
+            return
+        self.texts.clear()
+        self.display_snake(self.snake)
+        if self.autoplayer_snake != None and len(self.autoplayer_snake) >= 2:
+            self.display_snake(self.autoplayer_snake)
 
     def to_ranking(self):
         self.context = Context.OPTIONS
@@ -744,6 +767,9 @@ class Game:
         self.map_images.clear()
         self.spawn_fruit()
         self.display_map()
+    
+    def new_game_autoplayer(self):
+        print("run autoplayer here")
 
     def to_main_menu(self):
         self.context = Context.MAIN_MENU

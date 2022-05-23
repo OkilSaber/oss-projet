@@ -69,6 +69,10 @@ class Button:
     def new_game(self, game):
         game.play_sound("assets/button_click.mp3")
         game.new_game()
+    
+    def new_game_autoplayer(self, game):
+        game.play_sound("assets/button_click.mp3")
+        game.new_game_autoplayer()
 
     def save_rank(self, game):
         game.play_sound("assets/button_click.mp3")
