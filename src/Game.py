@@ -1032,3 +1032,16 @@ class Game:
             path.append((abs(self.snake[0]["x"] - self.fruit[0]) + abs(self.snake[0]["y"] - 1 - self.fruit[1]), 'up', (self.snake[0]["x"], self.snake[0]["y"] - 1)))
         return self.pickDir(path)
 
+    def pickDir(self, path):
+        dir = min(path, key = lambda t: t[0])
+        while (dir[2][0] < 0 or dir[2][0] >= 40 or dir[2][1] < 0 or dir[2][1] < 0 or self.is_snake(dir[2][0], dir[2][1])):
+            if (len(path) == 0):
+                return dir
+            dir = min(path, key = lambda t: t[0])
+            path.remove(dir)
+        return dir
+
+
+    def autoShortest(self):
+        dir = self.shortestDir()
+        self.direction = dir[1]
