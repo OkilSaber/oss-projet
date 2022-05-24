@@ -834,6 +834,10 @@ class Game:
         self.rectangles.clear()
         self.texts.clear()
         self.map_images.clear()
+        self.snakes.clear()
+        self.fruits.clear()
+        self.final_score = 0
+        self.playing = False
         self.create_main_menu_buttons()
 
     def load_score(self):
@@ -903,7 +907,7 @@ class Game:
             )
         )
 
-    def loose(self, event):
+    def loose(self, event, is_bot):
         x, y = self.screen.get_size()
         self.context = Context.MAIN_MENU
         high = False
@@ -929,35 +933,38 @@ class Game:
                 text_position=(x/2 - 20, y/2 - 20)
             ),
         )
-        try:
-            if len(self.ranking['ranking']) < 10 or self.final_score > self.ranking["ranking"][-1]["score"]:
+        if not is_bot:
+            try:
+                if len(self.ranking['ranking']) < 10 or self.final_score > self.ranking["ranking"][-1]["score"]:
+                    high = True
+                    self.add_rank_button(high)
+            except Exception as e:
                 high = True
                 self.add_rank_button(high)
-        except Exception as e:
-            high = True
-            self.add_rank_button(high)
 
-        if not high:
-            self.add_rank_button(high)
-        if high:
-            self.texts.append(
-                Text(
-                    text="Enter your name: %s" % self.final_score ,
-                    font="Corbel",
-                    text_color=Colors.dark,
-                    text_size=50,
-                    text_position=(x/2 - 100, y/2 - 300)
-                ),
-            )
-            self.texts.append(
-                Text(
-                    text=self.player,
-                    font="Corbel",
-                    text_color=Colors.dark,
-                    text_size=50,
-                    text_position=(x/2 - 50, y/2 - 200)
-                ),
-            )
+            if not high:
+                self.add_rank_button(high)
+            if high:
+                self.texts.append(
+                    Text(
+                        text="Enter your name: %s" % self.final_score ,
+                        font="Corbel",
+                        text_color=Colors.dark,
+                        text_size=50,
+                        text_position=(x/2 - 100, y/2 - 300)
+                    ),
+                )
+                self.texts.append(
+                    Text(
+                        text=self.player,
+                        font="Corbel",
+                        text_color=Colors.dark,
+                        text_size=50,
+                        text_position=(x/2 - 50, y/2 - 200)
+                    ),
+                )
+        else:
+            self.add_rank_button(False)
 
     def change_binding_up(self, key):
         self.update_settings("up", key)
