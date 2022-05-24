@@ -37,6 +37,8 @@ while game.running:
             game.gameover = True
             if len(game.snakes) == 2:
                 game.final_score = game.snakes[(loser_id + 1) % 2].score # if there is 2 player, the final score is the score of the not losing player
+            else:
+                game.final_score = game.snakes[0].score
         game.display_map()
     game.draw_elements(position=pygame.mouse.get_pos())
     pygame.display.update()
