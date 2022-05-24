@@ -10,13 +10,19 @@ class Snake:
     direction: str
     current_move: str
 
+    keys: dict
+
     is_bot = False
 
-    def __init__(self, direction: str = 'up', init_snake: List[dict] = [], is_bot: bool = False):
+    def __init__(self, direction: str = 'up', init_snake: List[dict] = [], keys: dict = None, is_bot: bool = False):
         self.direction = direction
         self.current_move = direction
         self.snake = init_snake
         self.is_bot = is_bot
+        if is_bot:
+            self.keys = None
+        else:
+            self.keys = keys
         self.score = (len(init_snake) - 3) * 10
     
     def set_current_move(self, direction: str):
@@ -28,8 +34,8 @@ class Snake:
     def get_body_imgs(self) -> List[MapImage]:
         res: List[MapImage] = []
 
-        x = Screen.START_X + 17 * (self.snake[0]["x"])
-        y = Screen.START_Y + 17 * (self.snake[0]["y"])
+        x = Screen.START_X + Screen.SQUARE_SIZE * (self.snake[0]["x"])
+        y = Screen.START_Y + Screen.SQUARE_SIZE * (self.snake[0]["y"])
         if self.snake[0]["y"] > self.snake[1]["y"]:
             res.append(MapImage(x, y, Assets.head_down))
         elif self.snake[0]["y"] < self.snake[1]["y"]:
@@ -41,8 +47,8 @@ class Snake:
 
         for i, curr in enumerate(self.snake[1:]):
             i += 1
-            x = Screen.START_X + 17 * (curr["x"])
-            y = Screen.START_Y + 17 * (curr["y"])
+            x = Screen.START_X + Screen.SQUARE_SIZE * (curr["x"])
+            y = Screen.START_Y + Screen.SQUARE_SIZE * (curr["y"])
             prev = self.snake[i - 1]
             next = None
             if i + 1 < len(self.snake):
@@ -105,12 +111,12 @@ class Snake:
     def change_direction_keyboard(self, key):
         if self.is_bot:
             return
-        if key == pygame.key.key_code(self.settings['left']) and self.current_move != 'right':
+        if key == pygame.key.key_code(self.keys['left']) and self.current_move != 'right':
             self.direction = 'left'
-        elif key == pygame.key.key_code(self.settings['right']) and self.current_move != 'left':
+        elif key == pygame.key.key_code(self.keys['right']) and self.current_move != 'left':
             self.direction = 'right'
-        elif key == pygame.key.key_code(self.settings['up']) and self.current_move != 'down':
+        elif key == pygame.key.key_code(self.keys['up']) and self.current_move != 'down':
             self.direction = 'up'
-        elif key == pygame.key.key_code(self.settings['down']) and self.current_move != 'up':
+        elif key == pygame.key.key_code(self.keys['down']) and self.current_move != 'up':
             self.direction = 'down'
         pygame.event.clear()
