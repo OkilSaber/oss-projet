@@ -32,7 +32,11 @@ while game.running:
     elif game.playing == True and game.gameover == False and pygame.time.get_ticks() - ticks > game.speed:
         ticks = pygame.time.get_ticks()
         game.map_images.clear()
-        game.gameover = not game.move_snakes()
+        (alive, loser_id) = game.move_snakes()
+        if not alive:
+            game.gameover = True
+            if len(game.snakes) == 2:
+                game.final_score = game.snakes[(loser_id + 1) % 2].score # if there is 2 player, the final score is the score of the not losing player
         game.display_map()
     game.draw_elements(position=pygame.mouse.get_pos())
     pygame.display.update()

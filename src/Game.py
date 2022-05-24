@@ -38,11 +38,12 @@ class Game:
     snakes: List[Snake]
     fruits: List[Fruit]
 
+    final_score: int = 0
+
     speed = 75
     ranking = {"ranking": []}
     playing = bool
     gameover = False
-    score = 0
     save_count = 0
 
     def __init__(self):
@@ -565,9 +566,32 @@ class Game:
             self.map_images += snake.get_body_imgs()
         for fruit in self.fruits:
             self.map_images.append(fruit.get_fruit_img())
+        self.display_scores()
     
-    def move_snakes(self):
-        for snake in self.snakes:
+    def display_scores(self):
+        self.texts.append(
+            Text(
+                text="Score: %s" % self.snakes[0].score,
+                font="Corbel",
+                text_color=Colors.black,
+                text_size=25,
+                text_position=(50, 50)
+            ),
+        )
+
+        if len(self.snakes) == 2:
+            self.texts.append(
+            Text(
+                text="Score: %s" % self.snakes[1].score,
+                font="Corbel",
+                text_color=Colors.black,
+                text_size=25,
+                text_position=(1000, 50)
+            ),
+        )
+    
+    def move_snakes(self) -> tuple[bool, int]:
+        for i, snake in enumerate(self.snakes):
             next_head: tuple[int, int]
             if snake.is_bot:
                 next_head = self.find_bot_best_next_head(snake)
@@ -583,9 +607,8 @@ class Game:
                     next_head = snake.get_new_head(1, 0)
                 snake.set_current_move(snake.direction)
             if not self.move_snake(snake, next_head):
-                # TODO: we should retrieve snake score here with snake.get_score() in order to have a proper save screen
-                return False
-        return True
+                return (False, i)
+        return (True, -1)
     
     def move_snake(self, snake: Snake, newhead: tuple[int, int]):
         # snake our of map
@@ -643,7 +666,6 @@ class Game:
         if shortest_dist == -1:
             return snake.get_new_head(0, 1)
         return next_head
-            
 
     def to_ranking(self):
         self.context = Context.OPTIONS
@@ -853,7 +875,7 @@ class Game:
             return
         if len(self.ranking["ranking"]) >= 10:
             self.ranking["ranking"].pop()
-        self.ranking["ranking"].append({"name": self.player, "score": self.score})
+        self.ranking["ranking"].append({"name": self.player, "score": self.final_score})
         self.ranking["ranking"].sort(key=lambda x: x["score"], reverse=True)
         self.player = ''
         ranking_file = open('.ranking.json', 'w')
@@ -900,7 +922,7 @@ class Game:
         )
         self.texts.append(
             Text(
-                text="Score: %s" %self.score ,
+                text="Score: %s" % self.final_score ,
                 font="Corbel",
                 text_color=Colors.dark,
                 text_size=50,
@@ -908,7 +930,7 @@ class Game:
             ),
         )
         try:
-            if len(self.ranking['ranking']) < 10 or self.score > self.ranking["ranking"][-1]["score"]:
+            if len(self.ranking['ranking']) < 10 or self.final_score > self.ranking["ranking"][-1]["score"]:
                 high = True
                 self.add_rank_button(high)
         except Exception as e:
@@ -920,7 +942,7 @@ class Game:
         if high:
             self.texts.append(
                 Text(
-                    text="Enter your name: %s" %self.score ,
+                    text="Enter your name: %s" % self.final_score ,
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=50,
