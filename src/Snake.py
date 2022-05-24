@@ -10,12 +10,21 @@ class Snake:
     snake: List[dict]
     direction: str
     current_move: str
+    sprites: dict
 
     keys: dict
 
     is_bot = False
 
-    def __init__(self, direction: str = 'up', init_snake: List[dict] = [], keys: dict = None, is_bot: bool = False):
+    def __init__(
+        self,
+        sprites: dict,
+        direction: str = 'up',
+        init_snake: List[dict] = [],
+        keys: dict = None,
+        is_bot: bool = False
+    ):
+        self.sprites = sprites
         self.direction = direction
         self.current_move = direction
         self.snake = init_snake
@@ -38,13 +47,13 @@ class Snake:
         x = Screen.START_X + Screen.SQUARE_SIZE * (self.snake[0]["x"])
         y = Screen.START_Y + Screen.SQUARE_SIZE * (self.snake[0]["y"])
         if self.snake[0]["y"] > self.snake[1]["y"]:
-            res.append(MapImage(x, y, Assets.head_down))
+            res.append(MapImage(x, y, self.sprites["head_down"]))
         elif self.snake[0]["y"] < self.snake[1]["y"]:
-            res.append(MapImage(x, y, Assets.head_up))
+            res.append(MapImage(x, y, self.sprites["head_up"]))
         elif self.snake[0]["x"] > self.snake[1]["x"]:
-            res.append(MapImage(x, y, Assets.head_right))
+            res.append(MapImage(x, y, self.sprites["head_right"]))
         else:
-            res.append(MapImage(x, y, Assets.head_left))
+            res.append(MapImage(x, y, self.sprites["head_left"]))
 
         for i, curr in enumerate(self.snake[1:]):
             i += 1
@@ -57,40 +66,42 @@ class Snake:
 
             if prev["y"] > curr["y"]:  # from down
                 if next == None:
-                    res.append(MapImage(x, y, Assets.tail_up))
+                    res.append(MapImage(x, y, self.sprites["tail_up"]))
                 elif curr["y"] > next["y"]:
-                    res.append(MapImage(x, y, Assets.body_vertical))
+                    res.append(MapImage(x, y, self.sprites["body_vertical"]))
                 elif curr["x"] > next["x"]:
-                    res.append(MapImage(x, y, Assets.body_bottomleft))
+                    res.append(MapImage(x, y, self.sprites["body_bottomleft"]))
                 else:
-                    res.append(MapImage(x, y, Assets.body_bottomright))
+                    res.append(
+                        MapImage(x, y, self.sprites["body_bottomright"]))
             elif prev["y"] < curr["y"]:  # from up
                 if next == None:
-                    res.append(MapImage(x, y, Assets.tail_down))
+                    res.append(MapImage(x, y, self.sprites["tail_down"]))
                 elif curr["y"] < next["y"]:
-                    res.append(MapImage(x, y, Assets.body_vertical))
+                    res.append(MapImage(x, y, self.sprites["body_vertical"]))
                 elif curr["x"] > next["x"]:
-                    res.append(MapImage(x, y, Assets.body_topleft))
+                    res.append(MapImage(x, y, self.sprites["body_topleft"]))
                 else:
-                    res.append(MapImage(x, y, Assets.body_topright))
+                    res.append(MapImage(x, y, self.sprites["body_topright"]))
             elif prev["x"] > curr["x"]:  # from right
                 if next == None:
-                    res.append(MapImage(x, y, Assets.tail_left))
+                    res.append(MapImage(x, y, self.sprites["tail_left"]))
                 elif curr["y"] < next["y"]:
-                    res.append(MapImage(x, y, Assets.body_bottomright))
+                    res.append(
+                        MapImage(x, y, self.sprites["body_bottomright"]))
                 elif curr["y"] > next["y"]:
-                    res.append(MapImage(x, y, Assets.body_topright))
+                    res.append(MapImage(x, y, self.sprites["body_topright"]))
                 else:
-                    res.append(MapImage(x, y, Assets.body_horizontal))
+                    res.append(MapImage(x, y, self.sprites["body_horizontal"]))
             else:  # from left
                 if next == None:
-                    res.append(MapImage(x, y, Assets.tail_right))
+                    res.append(MapImage(x, y, self.sprites["tail_right"]))
                 elif curr["y"] < next["y"]:
-                    res.append(MapImage(x, y, Assets.body_bottomleft))
+                    res.append(MapImage(x, y, self.sprites["body_bottomleft"]))
                 elif curr["y"] > next["y"]:
-                    res.append(MapImage(x, y, Assets.body_topleft))
+                    res.append(MapImage(x, y, self.sprites["body_topleft"]))
                 else:
-                    res.append(MapImage(x, y, Assets.body_horizontal))
+                    res.append(MapImage(x, y, self.sprites["body_horizontal"]))
         return res
 
     def is_snake(self, pos: tuple[int, int]) -> bool:

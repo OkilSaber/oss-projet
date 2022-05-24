@@ -810,6 +810,22 @@ class Game:
         self.gameover = False
 
         self.snakes.append(Snake(
+            sprites={
+                "head_down": Assets.head_down,
+                "head_up": Assets.head_up,
+                "head_right": Assets.head_right,
+                "head_left": Assets.head_left,
+                "tail_down": Assets.tail_down,
+                "tail_up": Assets.tail_up,
+                "tail_right": Assets.tail_right,
+                "tail_left": Assets.tail_left,
+                "body_vertical": Assets.body_vertical,
+                "body_horizontal": Assets.body_horizontal,
+                "body_topright": Assets.body_topright,
+                "body_topleft": Assets.body_topleft,
+                "body_bottomright": Assets.body_bottomright,
+                "body_bottomleft": Assets.body_bottomleft,
+            },
             direction="up",
             init_snake=[
                 {"x": 40/2, "y": 40/2},
@@ -833,6 +849,22 @@ class Game:
         self.gameover = False
 
         self.snakes.append(Snake(
+            sprites={
+                "head_down": Assets.head_down,
+                "head_up": Assets.head_up,
+                "head_right": Assets.head_right,
+                "head_left": Assets.head_left,
+                "tail_down": Assets.tail_down,
+                "tail_up": Assets.tail_up,
+                "tail_right": Assets.tail_right,
+                "tail_left": Assets.tail_left,
+                "body_vertical": Assets.body_vertical,
+                "body_horizontal": Assets.body_horizontal,
+                "body_topright": Assets.body_topright,
+                "body_topleft": Assets.body_topleft,
+                "body_bottomright": Assets.body_bottomright,
+                "body_bottomleft": Assets.body_bottomleft,
+            },
             direction="down",
             init_snake=[
                 {"x": 2, "y": 3},
@@ -843,6 +875,22 @@ class Game:
         ))
 
         self.snakes.append(Snake(
+            sprites={
+                "head_down": Assets.head_down_second,
+                "head_up": Assets.head_up_second,
+                "head_right": Assets.head_right_second,
+                "head_left": Assets.head_left_second,
+                "tail_down": Assets.tail_down_second,
+                "tail_up": Assets.tail_up_second,
+                "tail_right": Assets.tail_right_second,
+                "tail_left": Assets.tail_left_second,
+                "body_vertical": Assets.body_vertical_second,
+                "body_horizontal": Assets.body_horizontal_second,
+                "body_topright": Assets.body_topright_second,
+                "body_topleft": Assets.body_topleft_second,
+                "body_bottomright": Assets.body_bottomright_second,
+                "body_bottomleft": Assets.body_bottomleft_second,
+            },
             direction="up",
             init_snake=[
                 {"x": 38, "y": 37},
@@ -866,6 +914,22 @@ class Game:
         self.gameover = False
 
         self.snakes.append(Snake(
+            sprites={
+                "head_down": Assets.head_down,
+                "head_up": Assets.head_up,
+                "head_right": Assets.head_right,
+                "head_left": Assets.head_left,
+                "tail_down": Assets.tail_down,
+                "tail_up": Assets.tail_up,
+                "tail_right": Assets.tail_right,
+                "tail_left": Assets.tail_left,
+                "body_vertical": Assets.body_vertical,
+                "body_horizontal": Assets.body_horizontal,
+                "body_topright": Assets.body_topright,
+                "body_topleft": Assets.body_topleft,
+                "body_bottomright": Assets.body_bottomright,
+                "body_bottomleft": Assets.body_bottomleft,
+            },
             direction="up",
             init_snake=[
                 {"x": 39, "y": 37},
@@ -938,7 +1002,7 @@ class Game:
         self.music_volume = self.settings["music"] / 100
         self.effects_volume = self.settings["effects"] / 100
 
-    def update_settings(self, key, value, path = None):
+    def update_settings(self, key, value, path=None):
         if path:
             self.settings[path][key] = value
         else:
