@@ -1,5 +1,5 @@
-# oss-projet-01
-![license](https://img.shields.io/github/license/OkilSaber/oss-projet-01)
+# Open Source Software Team Project
+![license](https://img.shields.io/github/license/OkilSaber/oss-projet)
 
 This is a simple snake game made in python 3.10 using the pygame library.
 
