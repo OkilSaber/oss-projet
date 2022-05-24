@@ -16,6 +16,7 @@ from json import load, dump
 from typing import List
 import random
 
+
 class Game:
     buttons: List[Button]
     texts: List[Text]
@@ -65,9 +66,27 @@ class Game:
         self.fruits = []
 
     def create_main_menu_buttons(self):
+        # self.buttons.append(
+        #     Button(
+        #         on_click=Button.new_game,
+        #         rect=Rectangle(
+        #             position=(200, 25),
+        #             color=(Colors.beige),
+        #             hover_color=(Colors.white),
+        #             size=(880, 75),
+        #         ),
+        #         text=Text(
+        #             text="Play",
+        #             font="Corbel",
+        #             text_color=Colors.dark,
+        #             text_size=35,
+        #             text_position=(640, 50)
+        #         ),
+        #     )
+        # )
         self.buttons.append(
             Button(
-                on_click=Button.new_game,
+                on_click=Button.new_dual_game,
                 rect=Rectangle(
                     position=(200, 25),
                     color=(Colors.beige),
@@ -75,7 +94,7 @@ class Game:
                     size=(880, 75),
                 ),
                 text=Text(
-                    text="Play",
+                    text="Dual Play",
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
@@ -312,7 +331,7 @@ class Game:
                     size=(160, 40),
                 ),
                 text=Text(
-                    text=self.settings["up"],
+                    text=self.settings["first_player_controls"]["up"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
@@ -330,7 +349,7 @@ class Game:
                     size=(160, 40),
                 ),
                 text=Text(
-                    text=self.settings["down"],
+                    text=self.settings["first_player_controls"]["down"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
@@ -348,7 +367,7 @@ class Game:
                     size=(160, 40),
                 ),
                 text=Text(
-                    text=self.settings["left"],
+                    text=self.settings["first_player_controls"]["left"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
@@ -366,7 +385,7 @@ class Game:
                     size=(160, 40),
                 ),
                 text=Text(
-                    text=self.settings["right"],
+                    text=self.settings["first_player_controls"]["right"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
@@ -384,7 +403,7 @@ class Game:
                     size=(160, 40),
                 ),
                 text=Text(
-                    text=self.settings["pause"],
+                    text=self.settings["first_player_controls"]["pause"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
@@ -458,23 +477,23 @@ class Game:
             )
         )
         self.buttons.append(
-                    Button(
-                        on_click=Button.pause_quit_game,
-                        rect=Rectangle(
-                            position=(440, 550),
-                            color=(Colors.beige),
-                            hover_color=(Colors.white),
-                            size=(400, 100),
-                        ),
-                        text=Text(
-                            text="Quit",
-                            font="Corbel",
-                            text_color=Colors.dark,
-                            text_size=35,
-                            text_position=(610, 580)
-                        ),
-                    )
-                )
+            Button(
+                on_click=Button.pause_quit_game,
+                rect=Rectangle(
+                    position=(440, 550),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(400, 100),
+                ),
+                text=Text(
+                    text="Quit",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(610, 580)
+                ),
+            )
+        )
 
     def to_pause_menu(self):
         self.context = Context.PAUSE
@@ -507,7 +526,8 @@ class Game:
 
         y = 200
         for save in save_list:
-            save_name_display = "Map: %s || Date: %s" % (save[0].upper(), save[1].strftime("%m/%d/%Y, %H:%M:%S"))
+            save_name_display = "Map: %s || Date: %s" % (
+                save[0].upper(), save[1].strftime("%m/%d/%Y, %H:%M:%S"))
             self.buttons.append(
                 Button(
                     on_click=Button.play_this_save,
@@ -548,7 +568,7 @@ class Game:
                 )
             )
 
-            y+= 120
+            y += 120
 
     def display_map(self):
         if self.snakes == None or len(self.snakes) < 1:
@@ -559,7 +579,8 @@ class Game:
                 position=(Screen.START_X, Screen.START_Y),
                 color=(Colors.white),
                 hover_color=None,
-                size=(Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT, Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT),
+                size=(Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT,
+                      Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT),
             )
         )
         for snake in self.snakes:
@@ -567,7 +588,7 @@ class Game:
         for fruit in self.fruits:
             self.map_images.append(fruit.get_fruit_img())
         self.display_scores()
-    
+
     def display_scores(self):
         self.texts.append(
             Text(
@@ -581,15 +602,15 @@ class Game:
 
         if len(self.snakes) == 2:
             self.texts.append(
-            Text(
-                text="Score: %s" % self.snakes[1].score,
-                font="Corbel",
-                text_color=Colors.black,
-                text_size=25,
-                text_position=(1000, 50)
-            ),
-        )
-    
+                Text(
+                    text="Score: %s" % self.snakes[1].score,
+                    font="Corbel",
+                    text_color=Colors.black,
+                    text_size=25,
+                    text_position=(1000, 50)
+                ),
+            )
+
     def move_snakes(self) -> tuple[bool, int]:
         for i, snake in enumerate(self.snakes):
             next_head: tuple[int, int]
@@ -610,17 +631,17 @@ class Game:
             if not self.move_snake(snake, next_head):
                 return (False, i)
         return (True, -1)
-    
+
     def move_snake(self, snake: Snake, newhead: tuple[int, int]):
         # snake our of map
         if newhead[0] < 0 or newhead[0] >= 40 or newhead[1] < 0 or newhead[1] >= 40:
             return False
-        
+
         # snake hits himself or another snake
         for snk in self.snakes:
             if snk.is_snake(newhead):
                 return False
-        
+
         # snake eats fruit
         eats = False
         for fruit in self.fruits:
@@ -635,7 +656,8 @@ class Game:
         return True
 
     def generate_new_fruit_pos(self):
-        newpos = (round(random.randrange(0, 40)), round(random.randrange(0, 40)))
+        newpos = (round(random.randrange(0, 40)),
+                  round(random.randrange(0, 40)))
 
         # check if there is a snake on newpos
         for snake in self.snakes:
@@ -647,7 +669,7 @@ class Game:
             if fruit.is_fruit(newpos):
                 return self.generate_new_fruit_pos()
         return newpos
-    
+
     def find_bot_best_next_head(self, snake: Snake) -> tuple[int, int]:
         nearest_fruit: Fruit = None
         shortest_dist: int = -1
@@ -705,14 +727,14 @@ class Game:
             )
             self.texts.append(
                 Text(
-                    text="%s: %s" %(score["name"], score["score"]),
+                    text="%s: %s" % (score["name"], score["score"]),
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
                     text_position=(170, y + 15)
                 ),
             )
-            y+= 60
+            y += 60
 
     def player_name(self, event):
         if event.key == pygame.K_BACKSPACE and len(self.player) > 0:
@@ -777,7 +799,7 @@ class Game:
         self.snakes.append(Snake(
             direction=data["direction"],
             init_snake=data["snake"],
-            keys=self.settings
+            keys=self.settings["first_player_controls"]
         ))
         self.fruits.append(Fruit((data["fruit"]["x"], data["fruit"]["y"])))
         self.display_map()
@@ -786,7 +808,7 @@ class Game:
     def new_game(self):
         self.playing = True
         self.gameover = False
-    
+
         self.snakes.append(Snake(
             direction="up",
             init_snake=[
@@ -794,11 +816,44 @@ class Game:
                 {"x": 40/2, "y": 40/2+1},
                 {"x": 40/2, "y": 40/2+2}
             ],
-            keys=self.settings
+            keys=self.settings["first_player_controls"]
         ))
 
         self.fruits.append(Fruit(self.generate_new_fruit_pos()))
-    
+
+        self.context = Context.IN_GAME
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.map_images.clear()
+        self.display_map()
+
+    def new_dual_game(self):
+        self.playing = True
+        self.gameover = False
+
+        self.snakes.append(Snake(
+            direction="down",
+            init_snake=[
+                {"x": 2, "y": 3},
+                {"x": 2, "y": 2},
+                {"x": 2, "y": 1}
+            ],
+            keys=self.settings["first_player_controls"]
+        ))
+
+        self.snakes.append(Snake(
+            direction="up",
+            init_snake=[
+                {"x": 38, "y": 39},
+                {"x": 38, "y": 38},
+                {"x": 38, "y": 37}
+            ],
+            keys=self.settings["second_player_controls"]
+        ))
+
+        self.fruits.append(Fruit(self.generate_new_fruit_pos()))
+
         self.context = Context.IN_GAME
         self.buttons.clear()
         self.rectangles.clear()
@@ -821,7 +876,7 @@ class Game:
         ))
 
         self.fruits.append(Fruit(self.generate_new_fruit_pos()))
-    
+
         self.context = Context.IN_GAME
         self.buttons.clear()
         self.rectangles.clear()
@@ -845,7 +900,8 @@ class Game:
     def load_score(self):
         try:
             self.ranking = load(open(".ranking.json"))
-            self.ranking["ranking"].sort(key=lambda x: x["score"], reverse=True)
+            self.ranking["ranking"].sort(
+                key=lambda x: x["score"], reverse=True)
         except Exception as e:
             ranking = {
                 "ranking": []
@@ -860,11 +916,21 @@ class Game:
             settings = {
                 "music": 0,
                 "effects": 100,
-                "up": "up",
-                "down": "down",
-                "left": "left",
-                "right": "right",
-                "pause": "space"
+                "first_player_controls": {
+                    "up": "up",
+                    "down": "down",
+                    "left": "left",
+                    "right": "right",
+                    "pause": "space"
+                },
+                "second_player_controls": {
+                    "up": "w",
+                    "down": "s",
+                    "left": "a",
+                    "right": "d",
+                    "pause": "space"
+                },
+
             }
             settings_file = open('settings.json', 'w')
             dump(settings, settings_file)
@@ -872,8 +938,11 @@ class Game:
         self.music_volume = self.settings["music"] / 100
         self.effects_volume = self.settings["effects"] / 100
 
-    def update_settings(self, key, value):
-        self.settings[key] = value
+    def update_settings(self, key, value, path = None):
+        if path:
+            self.settings[path][key] = value
+        else:
+            self.settings[key] = value
         dump(self.settings, open('settings.json', 'w'))
 
     def save_rank(self):
@@ -881,7 +950,8 @@ class Game:
             return
         if len(self.ranking["ranking"]) >= 10:
             self.ranking["ranking"].pop()
-        self.ranking["ranking"].append({"name": self.player, "score": self.final_score})
+        self.ranking["ranking"].append(
+            {"name": self.player, "score": self.final_score})
         self.ranking["ranking"].sort(key=lambda x: x["score"], reverse=True)
         self.player = ''
         ranking_file = open('.ranking.json', 'w')
@@ -928,7 +998,7 @@ class Game:
         )
         self.texts.append(
             Text(
-                text="Score: %s" % self.final_score ,
+                text="Score: %s" % self.final_score,
                 font="Corbel",
                 text_color=Colors.dark,
                 text_size=50,
@@ -947,7 +1017,7 @@ class Game:
             if high:
                 self.texts.append(
                     Text(
-                        text="Enter your name: %s" % self.final_score ,
+                        text="Enter your name: %s" % self.final_score,
                         font="Corbel",
                         text_color=Colors.dark,
                         text_size=50,
@@ -969,7 +1039,7 @@ class Game:
             self.add_rank_button(False)
 
     def change_binding_up(self, key):
-        self.update_settings("up", key)
+        self.update_settings("up", key, "first_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -978,7 +1048,7 @@ class Game:
         return
 
     def change_binding_down(self, key):
-        self.update_settings("down", key)
+        self.update_settings("down", key, "first_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -987,7 +1057,7 @@ class Game:
         return
 
     def change_binding_left(self, key):
-        self.update_settings("left", key)
+        self.update_settings("left", key, "first_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -996,7 +1066,7 @@ class Game:
         return
 
     def change_binding_right(self, key):
-        self.update_settings("right", key)
+        self.update_settings("right", key, "first_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -1005,7 +1075,7 @@ class Game:
         return
 
     def change_binding_pause(self, key):
-        self.update_settings("pause", key)
+        self.update_settings("pause", key, "first_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
