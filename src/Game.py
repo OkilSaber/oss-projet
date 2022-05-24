@@ -640,8 +640,8 @@ class Game:
             if shortest_dist == -1 or dist < shortest_dist:
                 shortest_dist = dist
                 next_head = available_next_head
-        # if shortest_dist == -1:
-        #     return snake.get_new_head(0, 1)
+        if shortest_dist == -1:
+            return snake.get_new_head(0, 1)
         return next_head
             
 
@@ -787,15 +787,6 @@ class Game:
         self.gameover = False
 
         self.snakes.append(Snake(
-            direction="down",
-            init_snake=[
-                {"x": 0, "y": 3},
-                {"x": 0, "y": 2},
-                {"x": 0, "y": 1}
-            ],
-            keys=self.settings
-        ))
-        self.snakes.append(Snake(
             direction="up",
             init_snake=[
                 {"x": 39, "y": 37},
@@ -805,7 +796,6 @@ class Game:
             is_bot=True
         ))
 
-        self.fruits.append(Fruit(self.generate_new_fruit_pos()))
         self.fruits.append(Fruit(self.generate_new_fruit_pos()))
     
         self.context = Context.IN_GAME
