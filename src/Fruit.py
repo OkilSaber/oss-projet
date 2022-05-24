@@ -1,7 +1,6 @@
 from elements.MapImage import MapImage
 from constants.Assets import Assets
 from constants.Screen import Screen
-import random
 
 class Fruit:
     pos: tuple[int, int]

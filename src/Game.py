@@ -568,18 +568,22 @@ class Game:
     
     def move_snakes(self):
         for snake in self.snakes:
-            d = snake.direction
             r = True
-            if d == 'up':
-                r = self.move_snake(snake, 0, -1)
-            elif d == 'down':
-                r = self.move_snake(snake, 0, 1)
-            elif d == 'left':
-                r = self.move_snake(snake, -1, 0)
-            elif d == 'right':
-                r = self.move_snake(snake, 1, 0)
+            d = snake.direction
+            if snake.is_bot:
+                pass
+            else:
+                if d == 'up':
+                    r = self.move_snake(snake, 0, -1)
+                elif d == 'down':
+                    r = self.move_snake(snake, 0, 1)
+                elif d == 'left':
+                    r = self.move_snake(snake, -1, 0)
+                elif d == 'right':
+                    r = self.move_snake(snake, 1, 0)
             snake.set_current_move(d)
             if not r:
+                # TODO: we should retrieve snake score here with snake.get_score() in order to have a proper save screen
                 return False
         return True
     

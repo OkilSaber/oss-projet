@@ -120,3 +120,6 @@ class Snake:
         elif key == pygame.key.key_code(self.keys['down']) and self.current_move != 'up':
             self.direction = 'down'
         pygame.event.clear()
+    
+    def get_score(self) -> int:
+        return self.score
