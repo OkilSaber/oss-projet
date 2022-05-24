@@ -26,3 +26,6 @@ class Fruit:
     
     def set_pos(self, pos: tuple[int, int]):
         self.pos = pos
+    
+    def get_distance(self, snake_head: tuple[int, int]) -> int:
+        return abs(self.pos[0] - snake_head[0]) + abs(self.pos[1] - snake_head[1])

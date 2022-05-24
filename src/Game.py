@@ -568,28 +568,26 @@ class Game:
     
     def move_snakes(self):
         for snake in self.snakes:
-            r = True
-            d = snake.direction
+            next_head: tuple[int, int]
             if snake.is_bot:
-                pass
+                next_head = self.find_bot_best_next_head(snake)
             else:
-                if d == 'up':
-                    r = self.move_snake(snake, 0, -1)
-                elif d == 'down':
-                    r = self.move_snake(snake, 0, 1)
-                elif d == 'left':
-                    r = self.move_snake(snake, -1, 0)
-                elif d == 'right':
-                    r = self.move_snake(snake, 1, 0)
-            snake.set_current_move(d)
-            if not r:
+                next_head: tuple[int, int] = (0, 0)
+                if snake.direction == 'up':
+                    next_head = snake.get_new_head(0, -1)
+                elif snake.direction == 'down':
+                    next_head = snake.get_new_head(0, 1)
+                elif snake.direction == 'left':
+                    next_head = snake.get_new_head(-1, 0)
+                elif snake.direction == 'right':
+                    next_head = snake.get_new_head(1, 0)
+                snake.set_current_move(snake.direction)
+            if not self.move_snake(snake, next_head):
                 # TODO: we should retrieve snake score here with snake.get_score() in order to have a proper save screen
                 return False
         return True
     
-    def move_snake(self, snake: Snake, x: int, y: int):
-        newhead = snake.get_new_head(x, y)
-
+    def move_snake(self, snake: Snake, newhead: tuple[int, int]):
         # snake our of map
         if newhead[0] < 0 or newhead[0] >= 40 or newhead[1] < 0 or newhead[1] >= 40:
             return False
@@ -625,6 +623,27 @@ class Game:
             if fruit.is_fruit(newpos):
                 return self.generate_new_fruit_pos()
         return newpos
+    
+    def find_bot_best_next_head(self, snake: Snake) -> tuple[int, int]:
+        nearest_fruit: Fruit = None
+        shortest_dist: int = -1
+        for fruit in self.fruits:
+            dist = fruit.get_distance(snake.get_head())
+            if shortest_dist == -1 or dist < shortest_dist:
+                shortest_dist = dist
+                nearest_fruit = fruit
+        available_next_heads = snake.get_available_next_heads()
+        shortest_dist = -1
+        next_head: tuple[int, int] = None
+        for available_next_head in available_next_heads:
+            dist = nearest_fruit.get_distance(available_next_head)
+            if shortest_dist == -1 or dist < shortest_dist:
+                shortest_dist = dist
+                next_head = available_next_head
+        # if shortest_dist == -1:
+        #     return snake.get_new_head(0, 1)
+        return next_head
+            
 
     def to_ranking(self):
         self.context = Context.OPTIONS

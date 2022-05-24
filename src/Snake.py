@@ -104,6 +104,23 @@ class Snake:
         self.snake.insert(0, {"x": newhead[0], "y": newhead[1]})
         if not grow:
             self.snake.pop()
+    
+    def get_head(self) -> tuple[int, int]:
+        return (self.snake[0]["x"], self.snake[1]["y"])
+    
+    def get_available_next_heads(self) -> List[tuple[int, int]]:
+        available_heads: List[tuple[int, int]] = []
+        cur_head = (self.snake[0]["x"], self.snake[0]["y"])
+
+        if cur_head[0] + 1 < 40 and not self.is_snake((cur_head[0] + 1, cur_head[1])):
+            available_heads.append((cur_head[0] + 1, cur_head[1]))
+        if cur_head[0] - 1 >= 0 and not self.is_snake((cur_head[0] - 1, cur_head[1])):
+            available_heads.append((cur_head[0] - 1, cur_head[1]))
+        if cur_head[1] + 1 < 40 and not self.is_snake((cur_head[0], cur_head[1] + 1)):
+            available_heads.append((cur_head[0], cur_head[1] + 1))
+        if cur_head[1] - 1 >= 0 and not self.is_snake((cur_head[0], cur_head[1] - 1)):
+            available_heads.append((cur_head[0], cur_head[1] - 1))
+        return available_heads
 
     def get_new_head(self, add_x: int, add_y: int) -> tuple[int, int]:
         return (self.snake[0]["x"] + add_x, self.snake[0]["y"] + add_y)
