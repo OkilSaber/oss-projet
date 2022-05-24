@@ -225,9 +225,18 @@ class Game:
         self.texts.append(
             Text(
                 font="Corbel",
+                text="Player 1:",
+                text_color=Colors.dark,
+                text_position=(350, 300),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
                 text="Up",
                 text_color=Colors.dark,
-                text_position=(125, 350),
+                text_position=(350, 350),
                 text_size=35
             )
         )
@@ -236,7 +245,7 @@ class Game:
                 font="Corbel",
                 text="Down",
                 text_color=Colors.dark,
-                text_position=(125, 400),
+                text_position=(350, 400),
                 text_size=35
             )
         )
@@ -245,7 +254,7 @@ class Game:
                 font="Corbel",
                 text="Left",
                 text_color=Colors.dark,
-                text_position=(125, 450),
+                text_position=(350, 450),
                 text_size=35
             )
         )
@@ -254,7 +263,7 @@ class Game:
                 font="Corbel",
                 text="Right",
                 text_color=Colors.dark,
-                text_position=(125, 500),
+                text_position=(350, 500),
                 text_size=35
             )
         )
@@ -263,7 +272,61 @@ class Game:
                 font="Corbel",
                 text="Pause",
                 text_color=Colors.dark,
-                text_position=(125, 550),
+                text_position=(350, 550),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Player 2:",
+                text_color=Colors.dark,
+                text_position=(800, 300),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Up",
+                text_color=Colors.dark,
+                text_position=(800, 350),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Down",
+                text_color=Colors.dark,
+                text_position=(800, 400),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Left",
+                text_color=Colors.dark,
+                text_position=(800, 450),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Right",
+                text_color=Colors.dark,
+                text_position=(800, 500),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Pause",
+                text_color=Colors.dark,
+                text_position=(800, 550),
                 text_size=35
             )
         )
@@ -325,7 +388,7 @@ class Game:
             Button(
                 on_click=Button.change_context_up,
                 rect=Rectangle(
-                    position=(270, 345),
+                    position=(450, 345),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
                     size=(160, 40),
@@ -335,7 +398,7 @@ class Game:
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(305, 350)
+                    text_position=(500, 350)
                 ),
             )
         )
@@ -343,7 +406,7 @@ class Game:
             Button(
                 on_click=Button.change_context_down,
                 rect=Rectangle(
-                    position=(270, 395),
+                    position=(450, 395),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
                     size=(160, 40),
@@ -353,7 +416,7 @@ class Game:
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(305, 400)
+                    text_position=(500, 400)
                 ),
             )
         )
@@ -361,7 +424,7 @@ class Game:
             Button(
                 on_click=Button.change_context_left,
                 rect=Rectangle(
-                    position=(270, 445),
+                    position=(450, 445),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
                     size=(160, 40),
@@ -371,7 +434,7 @@ class Game:
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(305, 450)
+                    text_position=(500, 450)
                 ),
             )
         )
@@ -379,7 +442,7 @@ class Game:
             Button(
                 on_click=Button.change_context_right,
                 rect=Rectangle(
-                    position=(270, 495),
+                    position=(450, 495),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
                     size=(160, 40),
@@ -389,7 +452,7 @@ class Game:
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(305, 500)
+                    text_position=(500, 500)
                 ),
             )
         )
@@ -397,7 +460,7 @@ class Game:
             Button(
                 on_click=Button.change_context_pause,
                 rect=Rectangle(
-                    position=(270, 545),
+                    position=(450, 545),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
                     size=(160, 40),
@@ -407,7 +470,97 @@ class Game:
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(305, 550)
+                    text_position=(500, 550)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_up_second,
+                rect=Rectangle(
+                    position=(900, 345),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["second_player_controls"]["up"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(950, 350)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_down_second,
+                rect=Rectangle(
+                    position=(900, 395),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["second_player_controls"]["down"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(950, 400)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_left_second,
+                rect=Rectangle(
+                    position=(900, 445),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["second_player_controls"]["left"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(950, 450)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_right_second,
+                rect=Rectangle(
+                    position=(900, 495),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["second_player_controls"]["right"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(950, 500)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_pause_second,
+                rect=Rectangle(
+                    position=(900, 545),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["second_player_controls"]["pause"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(950, 550)
                 ),
             )
         )
@@ -1014,9 +1167,8 @@ class Game:
                     "down": "s",
                     "left": "a",
                     "right": "d",
-                    "pause": "space"
+                    "pause": "escape"
                 },
-
             }
             settings_file = open('settings.json', 'w')
             dump(settings, settings_file)
@@ -1125,7 +1277,8 @@ class Game:
             self.add_rank_button(False)
 
     def change_binding_up(self, key):
-        self.update_settings("up", key, "first_player_controls")
+        if not self.check_binding_used(key):
+            self.update_settings("up", key, "first_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -1134,7 +1287,8 @@ class Game:
         return
 
     def change_binding_down(self, key):
-        self.update_settings("down", key, "first_player_controls")
+        if not self.check_binding_used(key):
+            self.update_settings("down", key, "first_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -1143,7 +1297,8 @@ class Game:
         return
 
     def change_binding_left(self, key):
-        self.update_settings("left", key, "first_player_controls")
+        if not self.check_binding_used(key):
+            self.update_settings("left", key, "first_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -1152,7 +1307,8 @@ class Game:
         return
 
     def change_binding_right(self, key):
-        self.update_settings("right", key, "first_player_controls")
+        if not self.check_binding_used(key):
+            self.update_settings("right", key, "first_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -1161,7 +1317,58 @@ class Game:
         return
 
     def change_binding_pause(self, key):
-        self.update_settings("pause", key, "first_player_controls")
+        if not self.check_binding_used(key):
+            self.update_settings("pause", key, "first_player_controls")
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_up_second(self, key):
+        if not self.check_binding_used(key):
+            self.update_settings("up", key, "second_player_controls")
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_down_second(self, key):
+        if not self.check_binding_used(key):
+            self.update_settings("down", key, "second_player_controls")
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_left_second(self, key):
+        if not self.check_binding_used(key):
+            self.update_settings("left", key, "second_player_controls")
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_right_second(self, key):
+        if not self.check_binding_used(key):
+            self.update_settings("right", key, "second_player_controls")
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_pause_second(self, key):
+        if not self.check_binding_used(key):
+            self.update_settings("pause", key, "second_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -1182,3 +1389,24 @@ class Game:
                     self.change_binding_right(pygame.key.name(event.key))
                 case Context.OPTIONS_WAITING_INPUT_PAUSE:
                     self.change_binding_pause(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_UP_SECOND:
+                    self.change_binding_up_second(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_DOWN_SECOND:
+                    self.change_binding_down_second(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_LEFT_SECOND:
+                    self.change_binding_left_second(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_RIGHT_SECOND:
+                    self.change_binding_right_second(
+                        pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_PAUSE_SECOND:
+                    self.change_binding_pause_second(
+                        pygame.key.name(event.key))
+
+    def check_binding_used(self, new_key):
+        for key in self.settings["first_player_controls"]:
+            if (self.settings["first_player_controls"][key] == new_key):
+                return True
+        for key in self.settings["second_player_controls"]:
+            if (self.settings["second_player_controls"][key] == new_key):
+                return True
+        return False

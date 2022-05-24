@@ -7,7 +7,6 @@ from typing import Tuple
 from constants.Context import Context
 
 
-
 class Button:
     rect: Rectangle
     text: Text
@@ -69,7 +68,7 @@ class Button:
     def new_game(self, game):
         game.play_sound("assets/button_click.mp3")
         game.new_game()
-    
+
     def new_game_autoplayer(self, game):
         game.play_sound("assets/button_click.mp3")
         game.new_game_autoplayer()
@@ -113,6 +112,20 @@ class Button:
             game.texts[1].text_color
         )
 
+    def change_context_up_second(self, game):
+        game.context = Context.OPTIONS_WAITING_INPUT_UP_SECOND
+
+    def change_context_down_second(self, game):
+        game.context = Context.OPTIONS_WAITING_INPUT_DOWN_SECOND
+
+    def change_context_left_second(self, game):
+        game.context = Context.OPTIONS_WAITING_INPUT_LEFT_SECOND
+
+    def change_context_right_second(self, game):
+        game.context = Context.OPTIONS_WAITING_INPUT_RIGHT_SECOND
+
+    def change_context_pause_second(self, game):
+        game.context = Context.OPTIONS_WAITING_INPUT_PAUSE_SECOND
 
     def change_context_up(self, game):
         game.context = Context.OPTIONS_WAITING_INPUT_UP
@@ -141,7 +154,8 @@ class Button:
         game.context = Context.IN_GAME
 
     def pause_save_game(self, game):
-        Saves.save(game.save_count, game.snakes[0].snake, game.fruits[0].pos, game.snakes[0].direction)
+        Saves.save(
+            game.save_count, game.snakes[0].snake, game.fruits[0].pos, game.snakes[0].direction)
         game.save_count += 1
         game.to_main_menu()
 
