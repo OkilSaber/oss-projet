@@ -587,7 +587,8 @@ class Game:
             self.map_images += snake.get_body_imgs()
         for fruit in self.fruits:
             self.map_images.append(fruit.get_fruit_img())
-        self.display_scores()
+        if self.context != Context.DUAL_GAME:
+            self.display_scores()
 
     def display_scores(self):
         self.texts.append(
