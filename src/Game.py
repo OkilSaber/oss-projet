@@ -4,13 +4,16 @@ import re
 from constants.Assets import Assets
 from constants.Colors import Colors
 from constants.Context import Context
+from constants.Screen import Screen
 from elements.Button import Button
 from elements.Rectangle import Rectangle
 from elements.MapImage import MapImage
 from elements.Text import Text
+from Snake import Snake
+from Fruit import Fruit
 import Saves
 from json import load, dump
-from typing import List, Tuple
+from typing import List
 import random
 
 class Game:
@@ -29,16 +32,11 @@ class Game:
     texts = []
     rectangles = []
     map_images = []
-    fruit = (0, 0)
 
     player = ''
-    snake = []
-    direction = 'up'
-    current_move = 'up'
 
-    autoplayer_snake = []
-    autoplayer_direction = ''
-    autoplayer_current_move = ''
+    snakes: List[Snake]
+    fruits: List[Fruit]
 
     speed = 75
     ranking = {"ranking": []}
@@ -48,7 +46,7 @@ class Game:
     save_count = 0
 
     def __init__(self):
-        self.screen = pygame.display.set_mode((1280, 720))
+        self.screen = pygame.display.set_mode((Screen.WIDTH, Screen.HEIGHT))
         self.context = Context.MAIN_MENU
         self.create_main_menu_buttons()
         self.running = True
@@ -61,6 +59,9 @@ class Game:
         pygame.mixer.music.load(Assets.background_music)
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(self.music_volume)
+
+        self.snakes = []
+        self.fruits = []
 
     def create_main_menu_buttons(self):
         self.buttons.append(
@@ -547,87 +548,79 @@ class Game:
             )
 
             y+= 120
-    
-    def display_snake(self, snk):
-        if snk == None:
-            return
-        self.texts.clear()
-        start_x = (1280-(17*40))/2
-        start_y = ((720-(17*40))/2)
-        self.map_images.append(MapImage(start_x + 17 * self.fruit[0], start_y + 17 * self.fruit[1], Assets.apple_image))
-        self.rectangles.append(
-            Rectangle(
-                position=(start_x, start_y),
-                color=(Colors.white),
-                hover_color=None,
-                size=(17*40, 17*40),
-            )
-        )
-
-        x = start_x + 17 * (snk[0]["x"])
-        y = start_y + 17 * (snk[0]["y"])
-        if snk[0]["y"] > snk[1]["y"]:
-            self.map_images.append(MapImage(x, y, Assets.head_down))
-        elif snk[0]["y"] < snk[1]["y"]:
-            self.map_images.append(MapImage(x, y, Assets.head_up))
-        elif snk[0]["x"] > snk[1]["x"]:
-            self.map_images.append(MapImage(x, y, Assets.head_right))
-        else:
-            self.map_images.append(MapImage(x, y, Assets.head_left))
-
-        for i, curr in enumerate(snk[1:]):
-            i += 1
-            x = start_x + 17 * (curr["x"])
-            y = start_y + 17 * (curr["y"])
-            prev = snk[i - 1]
-            next = None
-            if i + 1 < len(snk):
-                next = snk[i + 1]
-
-            if prev["y"] > curr["y"]: # from down
-                if next == None:
-                    self.map_images.append(MapImage(x, y, Assets.tail_up))
-                elif curr["y"] > next["y"]:
-                    self.map_images.append(MapImage(x, y, Assets.body_vertical))
-                elif curr["x"] > next["x"]:
-                    self.map_images.append(MapImage(x, y, Assets.body_bottomleft))
-                else:
-                    self.map_images.append(MapImage(x, y, Assets.body_bottomright))
-            elif prev["y"] < curr["y"]: # from up
-                if next == None:
-                    self.map_images.append(MapImage(x, y, Assets.tail_down))
-                elif curr["y"] < next["y"]:
-                    self.map_images.append(MapImage(x, y, Assets.body_vertical))
-                elif curr["x"] > next["x"]:
-                    self.map_images.append(MapImage(x, y, Assets.body_topleft))
-                else:
-                    self.map_images.append(MapImage(x, y, Assets.body_topright))
-            elif prev["x"] > curr["x"]: # from right
-                if next == None:
-                    self.map_images.append(MapImage(x, y, Assets.tail_left))
-                elif curr["y"] < next["y"]:
-                    self.map_images.append(MapImage(x, y, Assets.body_bottomright))
-                elif curr["y"] > next["y"]:
-                    self.map_images.append(MapImage(x, y, Assets.body_topright))
-                else:
-                    self.map_images.append(MapImage(x, y, Assets.body_horizontal))
-            else: # from left
-                if next == None:
-                    self.map_images.append(MapImage(x, y, Assets.tail_right))
-                elif curr["y"] < next["y"]:
-                    self.map_images.append(MapImage(x, y, Assets.body_bottomleft))
-                elif curr["y"] > next["y"]:
-                    self.map_images.append(MapImage(x, y, Assets.body_topleft))
-                else:
-                    self.map_images.append(MapImage(x, y, Assets.body_horizontal))
 
     def display_map(self):
-        if self.snake == None:
+        if self.snakes == None or len(self.snakes) < 1:
             return
         self.texts.clear()
-        self.display_snake(self.snake)
-        if self.autoplayer_snake != None and len(self.autoplayer_snake) >= 2:
-            self.display_snake(self.autoplayer_snake)
+        self.rectangles.append(
+            Rectangle(
+                position=(Screen.START_X, Screen.START_Y),
+                color=(Colors.white),
+                hover_color=None,
+                size=(Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT, Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT),
+            )
+        )
+        for snake in self.snakes:
+            self.map_images += snake.get_body_imgs()
+        for fruit in self.fruits:
+            self.map_images.append(fruit.get_fruit_img())
+    
+    def move_snakes(self):
+        for snake in self.snakes:
+            d = snake.direction
+            r = True
+            if d == 'up':
+                r = self.move_snake(snake, 0, -1)
+            elif d == 'down':
+                r = self.move_snake(snake, 0, 1)
+            elif d == 'left':
+                r = self.move_snake(snake, -1, 0)
+            elif d == 'right':
+                r = self.move_snake(snake, 1, 0)
+            snake.set_current_move(d)
+            if not r:
+                return False
+        return True
+    
+    def move_snake(self, snake: Snake, x: int, y: int):
+        newhead = snake.get_new_head(x, y)
+
+        # snake our of map
+        if newhead[0] < 0 or newhead[0] >= 40 or newhead[1] < 0 or newhead[1] >= 40:
+            return False
+        
+        # snake hits himself or another snake
+        for snk in self.snakes:
+            if snk.is_snake(newhead):
+                return False
+        
+        # snake eats fruit
+        eats = False
+        for fruit in self.fruits:
+            if fruit.is_fruit(newhead):
+                snake.move_head(newhead, True)
+                fruit.set_pos(self.generate_new_fruit_pos())
+                eats = True
+
+        # snake is not eating a fruit
+        if not eats:
+            snake.move_head(newhead, False)
+        return True
+
+    def generate_new_fruit_pos(self):
+        newpos = (round(random.randrange(0, 40)), round(random.randrange(0, 40)))
+
+        # check if there is a snake on newpos
+        for snake in self.snakes:
+            if snake.is_snake(newpos):
+                return self.generate_new_fruit_pos()
+
+        # check if there already is a fruit on newpos
+        for fruit in self.fruits:
+            if fruit.is_fruit(newpos):
+                return self.generate_new_fruit_pos()
+        return newpos
 
     def to_ranking(self):
         self.context = Context.OPTIONS
@@ -681,11 +674,11 @@ class Game:
         elif len(self.player) <= 10:
             self.player += event.unicode
 
-    def check_buttons_click(self, position: Tuple[int, int]):
+    def check_buttons_click(self, position: tuple[int, int]):
         for button in self.buttons:
             button.check_click(game=self, position=position)
 
-    def draw_elements(self, position: Tuple[int, int]):
+    def draw_elements(self, position: tuple[int, int]):
         for rect in self.rectangles:
             rect.draw(screen=self.screen, color=rect.color)
         for text in self.texts:
@@ -735,41 +728,69 @@ class Game:
         self.texts.clear()
         self.map_images.clear()
         data = Saves.load_save(save_name)
-        self.snake = data["snake"]
-        self.direction = data["direction"]
-        self.fruit = (data["fruit"]["x"], data["fruit"]["y"])
-        self.score = (len(self.snake) - 3) * 10
+        self.snakes.append(Snake(
+            direction=data["direction"],
+            init_snake=data["snake"],
+            keys=self.settings
+        ))
         self.display_map()
         self.playing = True
-
-    def spawn_fruit(self):
-        x = round(random.randrange(0, 40))
-        y = round(random.randrange(0, 40))
-        for elem in self.snake:
-            if elem["x"] == x and elem["y"] == y:
-                return self.spawn_fruit()
-        self.fruit = (x, y)
 
     def new_game(self):
         self.playing = True
         self.gameover = False
-        self.score = 0
-        self.snake = []
-        self.direction = 'up'
-        self.current_move = 'up'
-        self.snake.append({"x": 40/2, "y": 40/2})
-        self.snake.append({"x": 40/2, "y": 40/2+1})
-        self.snake.append({"x": 40/2, "y": 40/2+2})
+    
+        self.snakes.append(Snake(
+            direction="up",
+            init_snake=[
+                {"x": 40/2, "y": 40/2},
+                {"x": 40/2, "y": 40/2+1},
+                {"x": 40/2, "y": 40/2+2}
+            ],
+            keys=self.settings
+        ))
+
+        self.fruits.append(Fruit(self.generate_new_fruit_pos()))
+    
         self.context = Context.IN_GAME
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
         self.map_images.clear()
-        self.spawn_fruit()
         self.display_map()
-    
+
     def new_game_autoplayer(self):
-        print("run autoplayer here")
+        self.playing = True
+        self.gameover = False
+
+        self.snakes.append(Snake(
+            direction="down",
+            init_snake=[
+                {"x": 0, "y": 3},
+                {"x": 0, "y": 2},
+                {"x": 0, "y": 1}
+            ],
+            keys=self.settings
+        ))
+        self.snakes.append(Snake(
+            direction="up",
+            init_snake=[
+                {"x": 39, "y": 37},
+                {"x": 39, "y": 38},
+                {"x": 39, "y": 39}
+            ],
+            is_bot=True
+        ))
+
+        self.fruits.append(Fruit(self.generate_new_fruit_pos()))
+        self.fruits.append(Fruit(self.generate_new_fruit_pos()))
+    
+        self.context = Context.IN_GAME
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.map_images.clear()
+        self.display_map()
 
     def to_main_menu(self):
         self.context = Context.MAIN_MENU
@@ -813,19 +834,6 @@ class Game:
     def update_settings(self, key, value):
         self.settings[key] = value
         dump(self.settings, open('settings.json', 'w'))
-
-    def move_head(self, newhead, cut_tail, grow):
-        if grow:
-            self.score += 10
-        self.snake.insert(0, {"x": newhead[0], "y": newhead[1]})
-        if cut_tail:
-            self.snake.pop()
-
-    def is_snake(self, x, y):
-        for elem in self.snake:
-            if elem["x"] == x and elem["y"] == y:
-                return True
-        return False
 
     def save_rank(self):
         if len(self.player) == 0:
@@ -915,76 +923,6 @@ class Game:
                     text_position=(x/2 - 50, y/2 - 200)
                 ),
             )
-
-
-    def move_up(self):
-        newhead = (self.snake[0]["x"], self.snake[0]["y"] - 1)
-        if newhead[1] < 0 or self.is_snake(newhead[0], newhead[1]):
-            self.gameover = True
-            return
-        if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
-            self.move_head(newhead, False, True)
-            self.spawn_fruit()
-        else:
-            self.move_head(newhead, True, False)
-
-    def move_down(self):
-        newhead = (self.snake[0]["x"], self.snake[0]["y"] + 1)
-        if newhead[1] >= 40 or self.is_snake(newhead[0], newhead[1]):
-            self.gameover = True
-            return
-        if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
-            self.move_head(newhead, False, True)
-            self.spawn_fruit()
-        else:
-            self.move_head(newhead, True, False)
-
-    def move_left(self):
-        newhead = (self.snake[0]["x"] - 1, self.snake[0]["y"])
-        if newhead[0] < 0 or self.is_snake(newhead[0], newhead[1]):
-            self.gameover = True
-            return
-        if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
-            self.move_head(newhead, False, True)
-            self.spawn_fruit()
-        else:
-            self.move_head(newhead, True, False)
-
-    def move_right(self):
-        newhead = (self.snake[0]["x"] + 1, self.snake[0]["y"])
-        if newhead[0] >= 40 or self.is_snake(newhead[0], newhead[1]):
-            self.gameover = True
-            return
-        if self.fruit[0] == newhead[0] and self.fruit[1] == newhead[1]:
-            self.move_head(newhead, False, True)
-            self.spawn_fruit()
-        else:
-            self.move_head(newhead, True, False)
-
-    def move_snake(self):
-        if self.direction == 'up' and self.playing:
-            self.move_up()
-            self.current_move = 'up'
-        if self.direction == 'down':
-            self.move_down()
-            self.current_move = 'down'
-        if self.direction == 'left':
-            self.move_left()
-            self.current_move = 'left'
-        if self.direction == 'right':
-            self.move_right()
-            self.current_move = 'right'
-
-    def change_direction(self, key):
-        if key == pygame.key.key_code(self.settings['left']) and self.current_move != 'right':
-            self.direction = 'left'
-        elif key == pygame.key.key_code(self.settings['right']) and self.current_move != 'left':
-            self.direction = 'right'
-        elif key == pygame.key.key_code(self.settings['up']) and self.current_move != 'down':
-            self.direction = 'up'
-        elif key == pygame.key.key_code(self.settings['down']) and self.current_move != 'up':
-            self.direction = 'down'
-        pygame.event.clear()
 
     def change_binding_up(self, key):
         self.update_settings("up", key)

@@ -17,11 +17,12 @@ while game.running:
             mouse = pygame.mouse.get_pos()
             game.check_buttons_click(mouse)
         if event.type == pygame.KEYDOWN:
-            game.change_direction(event.key)
             if game.gameover:
                 game.player_name(event)
             if game.context == Context.IN_GAME:
-                game.change_direction(event.key)
+                for snake in game.snakes:
+                    if not snake.is_bot:
+                        snake.change_direction_keyboard(event.key)  
                 if event.key == pygame.key.key_code(game.settings['pause']):
                     game.to_pause_menu()
         game.check_key_binding_input(event)
@@ -31,7 +32,7 @@ while game.running:
     elif game.playing == True and game.gameover == False and pygame.time.get_ticks() - ticks > game.speed:
         ticks = pygame.time.get_ticks()
         game.map_images.clear()
-        game.move_snake()
+        game.gameover = not game.move_snakes()
         game.display_map()
     game.draw_elements(position=pygame.mouse.get_pos())
     pygame.display.update()
