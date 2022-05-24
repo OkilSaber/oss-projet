@@ -137,7 +137,7 @@ class Button:
         game.context = Context.IN_GAME
 
     def pause_save_game(self, game):
-        Saves.save(game.save_count, game.snake, game.fruit, game.direction)
+        Saves.save(game.save_count, game.snakes[0].snake, game.fruits[0].pos, game.snakes[0].direction)
         game.save_count += 1
         game.to_main_menu()
 

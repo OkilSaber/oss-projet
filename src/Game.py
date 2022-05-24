@@ -778,6 +778,7 @@ class Game:
             init_snake=data["snake"],
             keys=self.settings
         ))
+        self.fruits.append(Fruit((data["fruit"]["x"], data["fruit"]["y"])))
         self.display_map()
         self.playing = True
 
