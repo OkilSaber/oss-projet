@@ -845,16 +845,16 @@ class Game:
         self.snakes.append(Snake(
             direction="up",
             init_snake=[
-                {"x": 38, "y": 39},
+                {"x": 38, "y": 37},
                 {"x": 38, "y": 38},
-                {"x": 38, "y": 37}
+                {"x": 38, "y": 39}
             ],
             keys=self.settings["second_player_controls"]
         ))
 
         self.fruits.append(Fruit(self.generate_new_fruit_pos()))
 
-        self.context = Context.IN_GAME
+        self.context = Context.DUAL_GAME
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()

@@ -74,7 +74,7 @@ class Button:
         game.play_sound("assets/button_click.mp3")
         game.new_game_autoplayer()
 
-    def new_game_autoplayer(self, game):
+    def new_dual_game(self, game):
         game.play_sound("assets/button_click.mp3")
         game.new_dual_game()
 
