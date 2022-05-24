@@ -66,39 +66,39 @@ class Game:
         self.fruits = []
 
     def create_main_menu_buttons(self):
-        # self.buttons.append(
-        #     Button(
-        #         on_click=Button.new_game,
-        #         rect=Rectangle(
-        #             position=(200, 25),
-        #             color=(Colors.beige),
-        #             hover_color=(Colors.white),
-        #             size=(880, 75),
-        #         ),
-        #         text=Text(
-        #             text="Play",
-        #             font="Corbel",
-        #             text_color=Colors.dark,
-        #             text_size=35,
-        #             text_position=(640, 50)
-        #         ),
-        #     )
-        # )
         self.buttons.append(
             Button(
-                on_click=Button.new_dual_game,
+                on_click=Button.new_game,
                 rect=Rectangle(
                     position=(200, 25),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
-                    size=(880, 75),
+                    size=(400, 75),
+                ),
+                text=Text(
+                    text="Play",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(350, 50)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.new_dual_game,
+                rect=Rectangle(
+                    position=(680, 25),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(400, 75),
                 ),
                 text=Text(
                     text="Dual Play",
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(640, 50)
+                    text_position=(750, 50)
                 ),
             )
         )
