@@ -150,8 +150,17 @@ class Button:
         game.rectangles.clear()
         game.texts.clear()
         game.map_images.clear()
-        game.direction = "up"
+        game.snakes.clear()
         game.new_game()
+
+    def pause_dual_restart_game(self, game):
+        game.buttons.clear()
+        game.rectangles.clear()
+        game.texts.clear()
+        game.map_images.clear()
+        game.snakes.clear()
+        game.fruits.clear()
+        game.new_dual_game()
 
     def pause_quit_game(self, game):
         game.to_main_menu()

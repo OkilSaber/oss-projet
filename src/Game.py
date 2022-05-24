@@ -412,7 +412,7 @@ class Game:
             )
         )
 
-    def create_pause_menu_elements(self):
+    def create_pause_menu_elements(self, isDualGame: bool):
         self.texts.append(
             Text(
                 font="Corbel",
@@ -440,42 +440,63 @@ class Game:
                 ),
             )
         )
-        self.buttons.append(
-            Button(
-                on_click=Button.pause_save_game,
-                rect=Rectangle(
-                    position=(440, 250),
-                    color=(Colors.beige),
-                    hover_color=(Colors.white),
-                    size=(400, 100),
-                ),
-                text=Text(
-                    text="Save",
-                    font="Corbel",
-                    text_color=Colors.dark,
-                    text_size=35,
-                    text_position=(610, 280)
-                ),
+        if isDualGame:
+            self.buttons.append(
+                Button(
+                    on_click=Button.pause_dual_restart_game,
+                    rect=Rectangle(
+                        position=(440, 400),
+                        color=(Colors.beige),
+                        hover_color=(Colors.white),
+                        size=(400, 100),
+                    ),
+                    text=Text(
+                        text="Restart",
+                        font="Corbel",
+                        text_color=Colors.dark,
+                        text_size=35,
+                        text_position=(600, 430)
+                    ),
+                )
             )
-        )
-        self.buttons.append(
-            Button(
-                on_click=Button.pause_restart_game,
-                rect=Rectangle(
-                    position=(440, 400),
-                    color=(Colors.beige),
-                    hover_color=(Colors.white),
-                    size=(400, 100),
-                ),
-                text=Text(
-                    text="Restart",
-                    font="Corbel",
-                    text_color=Colors.dark,
-                    text_size=35,
-                    text_position=(600, 430)
-                ),
+        else:
+            self.buttons.append(
+                Button(
+                    on_click=Button.pause_save_game,
+                    rect=Rectangle(
+                        position=(440, 250),
+                        color=(Colors.beige),
+                        hover_color=(Colors.white),
+                        size=(400, 100),
+                    ),
+                    text=Text(
+                        text="Save",
+                        font="Corbel",
+                        text_color=Colors.dark,
+                        text_size=35,
+                        text_position=(610, 280)
+                    ),
+                )
             )
-        )
+
+            self.buttons.append(
+                Button(
+                    on_click=Button.pause_restart_game,
+                    rect=Rectangle(
+                        position=(440, 400),
+                        color=(Colors.beige),
+                        hover_color=(Colors.white),
+                        size=(400, 100),
+                    ),
+                    text=Text(
+                        text="Restart",
+                        font="Corbel",
+                        text_color=Colors.dark,
+                        text_size=35,
+                        text_position=(600, 430)
+                    ),
+                )
+            )
         self.buttons.append(
             Button(
                 on_click=Button.pause_quit_game,
@@ -495,13 +516,13 @@ class Game:
             )
         )
 
-    def to_pause_menu(self):
+    def to_pause_menu(self, isDualGame: bool):
         self.context = Context.PAUSE
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
         self.map_images.clear()
-        self.create_pause_menu_elements()
+        self.create_pause_menu_elements(isDualGame)
         self.playing = False
 
     def create_loadable_saves_menu(self, save_list):
@@ -1044,7 +1065,7 @@ class Game:
             )
         )
 
-    def loose(self, event, is_bot):
+    def loose(self, is_bot):
         x, y = self.screen.get_size()
         self.context = Context.MAIN_MENU
         high = False
