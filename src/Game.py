@@ -597,14 +597,15 @@ class Game:
                 next_head = self.find_bot_best_next_head(snake)
             else:
                 next_head: tuple[int, int] = (0, 0)
-                if snake.direction == 'up':
-                    next_head = snake.get_new_head(0, -1)
-                elif snake.direction == 'down':
-                    next_head = snake.get_new_head(0, 1)
-                elif snake.direction == 'left':
-                    next_head = snake.get_new_head(-1, 0)
-                elif snake.direction == 'right':
-                    next_head = snake.get_new_head(1, 0)
+                match snake.direction:
+                    case 'up':
+                        next_head = snake.get_new_head(0, -1)
+                    case 'down':
+                        next_head = snake.get_new_head(0, 1)
+                    case 'left':
+                        next_head = snake.get_new_head(-1, 0)
+                    case 'right':
+                        next_head = snake.get_new_head(1, 0)
                 snake.set_current_move(snake.direction)
             if not self.move_snake(snake, next_head):
                 return (False, i)
@@ -943,8 +944,6 @@ class Game:
                 high = True
                 self.add_rank_button(high)
 
-            if not high:
-                self.add_rank_button(high)
             if high:
                 self.texts.append(
                     Text(
@@ -964,6 +963,8 @@ class Game:
                         text_position=(x/2 - 50, y/2 - 200)
                     ),
                 )
+            else:
+                self.add_rank_button(high)
         else:
             self.add_rank_button(False)
 

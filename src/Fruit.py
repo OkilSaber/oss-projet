@@ -5,7 +5,7 @@ from constants.Screen import Screen
 class Fruit:
     pos: tuple[int, int]
 
-    def __init__(self, pos: tuple = None):
+    def __init__(self, pos: tuple[int, int] = None):
         if pos is None:
             self.pos = (0, 0)
         else:
