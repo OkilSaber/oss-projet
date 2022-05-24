@@ -25,6 +25,11 @@ while game.running:
                         snake.change_direction_keyboard(event.key)  
                 if event.key == pygame.key.key_code(game.settings["first_player_controls"]['pause']):
                     game.to_pause_menu()
+            if game.context == Context.DUAL_GAME:
+                for snake in game.snakes:
+                    snake.change_direction_keyboard(event.key)  
+                if event.key == pygame.key.key_code(game.settings["first_player_controls"]['pause']):
+                    game.to_pause_menu()
                 elif event.key == pygame.key.key_code(game.settings["second_player_controls"]['pause']):
                     game.to_pause_menu()
         game.check_key_binding_input(event)
