@@ -656,7 +656,7 @@ class Game:
 
     def find_bot_best_next_head(self, snake: Snake) -> tuple[int, int]:
         fruit_to_reach = self.fruits[0]
-        current_head = snake.get_head()
+        current_head = (snake.snake[0]["x"], snake.snake[0]["y"])
         next_head = list(current_head)
 
         if current_head[0] != fruit_to_reach.pos[0]:
