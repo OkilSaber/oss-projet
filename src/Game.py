@@ -659,8 +659,17 @@ class Game:
         current_head = snake.get_head()
         next_head = list(current_head)
 
-        next_head[0] -=1
-        return tuple(next_head)
+        if current_head[0] != fruit_to_reach.pos[0]:
+            if current_head[0] > fruit_to_reach.pos[0] and self.is_next_head_free(snake, (next_head[0] - 1, next_head[1])):
+                next_head[0] -= 1
+            elif current_head[0] < fruit_to_reach.pos[0] and self.is_next_head_free(snake, (next_head[0] + 1, next_head[1])):
+                next_head[0] += 1
+        elif current_head[1] != fruit_to_reach.pos[1]:
+            if current_head[1] > fruit_to_reach.pos[1] and self.is_next_head_free(snake, (next_head[0], next_head[1] - 1)):
+                next_head[1] -= 1
+            elif current_head[1] < fruit_to_reach.pos[1] and self.is_next_head_free(snake, (next_head[0], next_head[1] + 1)):
+                next_head[1] += 1
+        return (tuple(next_head))
 
     def to_ranking(self):
         self.context = Context.OPTIONS
