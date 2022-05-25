@@ -1157,18 +1157,18 @@ class Game:
                 "music": 0,
                 "effects": 100,
                 "first_player_controls": {
-                    "up": "up",
-                    "down": "down",
-                    "left": "left",
-                    "right": "right",
-                    "pause": "space"
-                },
-                "second_player_controls": {
                     "up": "w",
                     "down": "s",
                     "left": "a",
                     "right": "d",
                     "pause": "escape"
+                },
+                "second_player_controls": {
+                    "up": "up",
+                    "down": "down",
+                    "left": "left",
+                    "right": "right",
+                    "pause": "return"
                 },
             }
             settings_file = open('settings.json', 'w')
