@@ -1076,6 +1076,7 @@ class Game:
         ))
 
         self.fruits.append(Fruit(self.generate_new_fruit_pos()))
+        self.fruits.append(Fruit(self.generate_new_fruit_pos()))
 
         self.context = Context.DUAL_GAME
         self.buttons.clear()
