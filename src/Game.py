@@ -612,7 +612,7 @@ class Game:
         return (True, -1)
     
     def move_snake(self, snake: Snake, newhead: tuple[int, int]):
-        # snake our of map
+        # snake out of map
         if newhead[0] < 0 or newhead[0] >= 40 or newhead[1] < 0 or newhead[1] >= 40:
             return False
         
@@ -647,26 +647,14 @@ class Game:
             if fruit.is_fruit(newpos):
                 return self.generate_new_fruit_pos()
         return newpos
-    
+
     def find_bot_best_next_head(self, snake: Snake) -> tuple[int, int]:
-        nearest_fruit: Fruit = None
-        shortest_dist: int = -1
-        for fruit in self.fruits:
-            dist = fruit.get_distance(snake.get_head())
-            if shortest_dist == -1 or dist < shortest_dist:
-                shortest_dist = dist
-                nearest_fruit = fruit
-        available_next_heads = snake.get_available_next_heads()
-        shortest_dist = -1
-        next_head: tuple[int, int] = None
-        for available_next_head in available_next_heads:
-            dist = nearest_fruit.get_distance(available_next_head)
-            if shortest_dist == -1 or dist < shortest_dist:
-                shortest_dist = dist
-                next_head = available_next_head
-        if shortest_dist == -1:
-            return snake.get_new_head(0, 1)
-        return next_head
+        fruit_to_reach = self.fruits[0]
+        current_head = snake.get_head()
+        next_head = list(current_head)
+
+        next_head[0] -=1
+        return tuple(next_head)
 
     def to_ranking(self):
         self.context = Context.OPTIONS
