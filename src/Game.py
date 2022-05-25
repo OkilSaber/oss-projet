@@ -648,6 +648,12 @@ class Game:
                 return self.generate_new_fruit_pos()
         return newpos
 
+    def is_next_head_free(self, snake: Snake, next_head) -> bool:
+        if next_head[0] < 40 and next_head[1] > 0 and next_head[0] > 0 and next_head[1] < 40 \
+            and next_head and not snake.is_snake(next_head):
+            return True
+        return False
+
     def find_bot_best_next_head(self, snake: Snake) -> tuple[int, int]:
         fruit_to_reach = self.fruits[0]
         current_head = snake.get_head()
