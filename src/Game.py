@@ -600,8 +600,28 @@ class Game:
                 position=(Screen.START_X, Screen.START_Y),
                 color=(Colors.white),
                 hover_color=None,
-                size=(Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT,
+                size=(Screen.SQUARE_SIZE * Screen.BOARD_WIDTH,
                       Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT),
+            )
+        )
+        for snake in self.snakes:
+            self.map_images += snake.get_body_imgs()
+        for fruit in self.fruits:
+            self.map_images.append(fruit.get_fruit_img())
+        if self.context != Context.DUAL_GAME:
+            self.display_scores()
+
+    def display_dual_map(self):
+        if self.snakes == None or len(self.snakes) < 1:
+            return
+        self.texts.clear()
+        self.rectangles.append(
+            Rectangle(
+                position=(Screen.START_X_DUAL, Screen.START_Y_DUAL),
+                color=(Colors.white),
+                hover_color=None,
+                size=(Screen.SQUARE_SIZE * Screen.BOARD_WIDTH_DUAL,
+                      Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT_DUAL),
             )
         )
         for snake in self.snakes:
@@ -923,13 +943,14 @@ class Game:
         ))
 
         self.fruits.append(Fruit(self.generate_new_fruit_pos()))
+        self.fruits.append(Fruit(self.generate_new_fruit_pos()))
 
         self.context = Context.DUAL_GAME
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
         self.map_images.clear()
-        self.display_map()
+        self.display_dual_map()
 
     def new_game_autoplayer(self):
         self.playing = True
