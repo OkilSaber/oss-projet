@@ -13,17 +13,23 @@ class Snake:
     sprites: dict
 
     keys: dict
+    screen_start_x: int
+    screen_start_y: int
 
     is_bot = False
 
     def __init__(
         self,
         sprites: dict,
+        screen_start_x: int,
+        screen_start_y: int,
         direction: str = 'up',
         init_snake: List[dict] = [],
         keys: dict = None,
         is_bot: bool = False
     ):
+        self.screen_start_x = screen_start_x
+        self.screen_start_y = screen_start_y
         self.sprites = sprites
         self.direction = direction
         self.current_move = direction
@@ -44,8 +50,8 @@ class Snake:
     def get_body_imgs(self) -> List[MapImage]:
         res: List[MapImage] = []
 
-        x = Screen.START_X + Screen.SQUARE_SIZE * (self.snake[0]["x"])
-        y = Screen.START_Y + Screen.SQUARE_SIZE * (self.snake[0]["y"])
+        x = self.screen_start_x + Screen.SQUARE_SIZE * (self.snake[0]["x"])
+        y = self.screen_start_y + Screen.SQUARE_SIZE * (self.snake[0]["y"])
         if self.snake[0]["y"] > self.snake[1]["y"]:
             res.append(MapImage(x, y, self.sprites["head_down"]))
         elif self.snake[0]["y"] < self.snake[1]["y"]:
@@ -57,8 +63,8 @@ class Snake:
 
         for i, curr in enumerate(self.snake[1:]):
             i += 1
-            x = Screen.START_X + Screen.SQUARE_SIZE * (curr["x"])
-            y = Screen.START_Y + Screen.SQUARE_SIZE * (curr["y"])
+            x = self.screen_start_x + Screen.SQUARE_SIZE * (curr["x"])
+            y = self.screen_start_y + Screen.SQUARE_SIZE * (curr["y"])
             prev = self.snake[i - 1]
             next = None
             if i + 1 < len(self.snake):
