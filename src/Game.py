@@ -29,6 +29,8 @@ class Game:
     effects_volume: float
     settings: dict
     background_image_surface: pygame.Surface
+    board_height: int
+    board_width: int
     buttons = []
     texts = []
     rectangles = []
@@ -748,13 +750,37 @@ class Game:
         if self.snakes == None or len(self.snakes) < 1:
             return
         self.texts.clear()
+        self.board_height = Screen.BOARD_HEIGHT
+        self.board_width = Screen.BOARD_WIDTH
         self.rectangles.append(
             Rectangle(
                 position=(Screen.START_X, Screen.START_Y),
                 color=(Colors.white),
                 hover_color=None,
-                size=(Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT,
+                size=(Screen.SQUARE_SIZE * Screen.BOARD_WIDTH,
                       Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT),
+            )
+        )
+        for snake in self.snakes:
+            self.map_images += snake.get_body_imgs()
+        for fruit in self.fruits:
+            self.map_images.append(fruit.get_fruit_img())
+        if self.context != Context.DUAL_GAME:
+            self.display_scores()
+
+    def display_dual_map(self):
+        if self.snakes == None or len(self.snakes) < 1:
+            return
+        self.texts.clear()
+        self.board_width = Screen.BOARD_WIDTH_DUAL
+        self.board_height = Screen.BOARD_HEIGHT_DUAL
+        self.rectangles.append(
+            Rectangle(
+                position=(Screen.START_X_DUAL, Screen.START_Y_DUAL),
+                color=(Colors.white),
+                hover_color=None,
+                size=(Screen.SQUARE_SIZE * Screen.BOARD_WIDTH_DUAL,
+                      Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT_DUAL),
             )
         )
         for snake in self.snakes:
@@ -808,8 +834,8 @@ class Game:
         return (True, -1)
 
     def move_snake(self, snake: Snake, newhead: tuple[int, int]):
-        # snake our of map
-        if newhead[0] < 0 or newhead[0] >= 40 or newhead[1] < 0 or newhead[1] >= 40:
+        # snake out of map
+        if newhead[0] < 0 or newhead[0] >= self.board_width or newhead[1] < 0 or newhead[1] >= self.board_height:
             return False
 
         # snake hits himself or another snake
@@ -972,6 +998,8 @@ class Game:
         self.map_images.clear()
         data = Saves.load_save(save_name)
         self.snakes.append(Snake(
+            screen_start_x=Screen.START_X,
+            screen_start_y=Screen.START_Y,
             direction=data["direction"],
             init_snake=data["snake"],
             keys=self.settings["first_player_controls"]
@@ -985,6 +1013,8 @@ class Game:
         self.gameover = False
 
         self.snakes.append(Snake(
+            screen_start_x=Screen.START_X,
+            screen_start_y=Screen.START_Y,
             sprites={
                 "head_down": Assets.head_down,
                 "head_up": Assets.head_up,
@@ -1024,6 +1054,8 @@ class Game:
         self.gameover = False
 
         self.snakes.append(Snake(
+            screen_start_x=Screen.START_X_DUAL,
+            screen_start_y=Screen.START_Y_DUAL,
             sprites={
                 "head_down": Assets.head_down,
                 "head_up": Assets.head_up,
@@ -1050,6 +1082,8 @@ class Game:
         ))
 
         self.snakes.append(Snake(
+            screen_start_x=Screen.START_X_DUAL,
+            screen_start_y=Screen.START_Y_DUAL,
             sprites={
                 "head_down": Assets.head_down_second,
                 "head_up": Assets.head_up_second,
@@ -1083,13 +1117,15 @@ class Game:
         self.rectangles.clear()
         self.texts.clear()
         self.map_images.clear()
-        self.display_map()
+        self.display_dual_map()
 
     def new_game_autoplayer(self):
         self.playing = True
         self.gameover = False
 
         self.snakes.append(Snake(
+            screen_start_x=Screen.START_X,
+            screen_start_y=Screen.START_Y,
             sprites={
                 "head_down": Assets.head_down,
                 "head_up": Assets.head_up,

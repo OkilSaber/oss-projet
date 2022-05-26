@@ -51,6 +51,9 @@ while game.running:
                 game.final_score = game.snakes[(loser_id + 1) % 2].score
             else:
                 game.final_score = game.snakes[0].score
-        game.display_map()
+        if game.context == Context.DUAL_GAME:
+            game.display_dual_map()
+        else:
+            game.display_map()
     game.draw_elements(position=pygame.mouse.get_pos())
     pygame.display.update()
