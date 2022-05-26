@@ -16,6 +16,7 @@ from json import load, dump
 from typing import List
 import random
 
+
 class Game:
     buttons: List[Button]
     texts: List[Text]
@@ -28,6 +29,8 @@ class Game:
     effects_volume: float
     settings: dict
     background_image_surface: pygame.Surface
+    board_height: int
+    board_width: int
     buttons = []
     texts = []
     rectangles = []
@@ -40,7 +43,7 @@ class Game:
 
     final_score: int = 0
 
-    speed = 75
+    speed = 60
     ranking = {"ranking": []}
     playing = bool
     gameover = False
@@ -72,14 +75,32 @@ class Game:
                     position=(200, 25),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
-                    size=(880, 75),
+                    size=(400, 75),
                 ),
                 text=Text(
                     text="Play",
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(640, 50)
+                    text_position=(350, 50)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.new_dual_game,
+                rect=Rectangle(
+                    position=(680, 25),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(400, 75),
+                ),
+                text=Text(
+                    text="Dual Play",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(750, 50)
                 ),
             )
         )
@@ -206,9 +227,18 @@ class Game:
         self.texts.append(
             Text(
                 font="Corbel",
+                text="Player 1:",
+                text_color=Colors.dark,
+                text_position=(350, 300),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
                 text="Up",
                 text_color=Colors.dark,
-                text_position=(125, 350),
+                text_position=(350, 350),
                 text_size=35
             )
         )
@@ -217,7 +247,7 @@ class Game:
                 font="Corbel",
                 text="Down",
                 text_color=Colors.dark,
-                text_position=(125, 400),
+                text_position=(350, 400),
                 text_size=35
             )
         )
@@ -226,7 +256,7 @@ class Game:
                 font="Corbel",
                 text="Left",
                 text_color=Colors.dark,
-                text_position=(125, 450),
+                text_position=(350, 450),
                 text_size=35
             )
         )
@@ -235,7 +265,7 @@ class Game:
                 font="Corbel",
                 text="Right",
                 text_color=Colors.dark,
-                text_position=(125, 500),
+                text_position=(350, 500),
                 text_size=35
             )
         )
@@ -244,7 +274,61 @@ class Game:
                 font="Corbel",
                 text="Pause",
                 text_color=Colors.dark,
-                text_position=(125, 550),
+                text_position=(350, 550),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Player 2:",
+                text_color=Colors.dark,
+                text_position=(800, 300),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Up",
+                text_color=Colors.dark,
+                text_position=(800, 350),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Down",
+                text_color=Colors.dark,
+                text_position=(800, 400),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Left",
+                text_color=Colors.dark,
+                text_position=(800, 450),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Right",
+                text_color=Colors.dark,
+                text_position=(800, 500),
+                text_size=35
+            )
+        )
+        self.texts.append(
+            Text(
+                font="Corbel",
+                text="Pause",
+                text_color=Colors.dark,
+                text_position=(800, 550),
                 text_size=35
             )
         )
@@ -306,17 +390,17 @@ class Game:
             Button(
                 on_click=Button.change_context_up,
                 rect=Rectangle(
-                    position=(270, 345),
+                    position=(450, 345),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
                     size=(160, 40),
                 ),
                 text=Text(
-                    text=self.settings["up"],
+                    text=self.settings["first_player_controls"]["up"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(305, 350)
+                    text_position=(500, 350)
                 ),
             )
         )
@@ -324,17 +408,17 @@ class Game:
             Button(
                 on_click=Button.change_context_down,
                 rect=Rectangle(
-                    position=(270, 395),
+                    position=(450, 395),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
                     size=(160, 40),
                 ),
                 text=Text(
-                    text=self.settings["down"],
+                    text=self.settings["first_player_controls"]["down"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(305, 400)
+                    text_position=(500, 400)
                 ),
             )
         )
@@ -342,17 +426,17 @@ class Game:
             Button(
                 on_click=Button.change_context_left,
                 rect=Rectangle(
-                    position=(270, 445),
+                    position=(450, 445),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
                     size=(160, 40),
                 ),
                 text=Text(
-                    text=self.settings["left"],
+                    text=self.settings["first_player_controls"]["left"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(305, 450)
+                    text_position=(500, 450)
                 ),
             )
         )
@@ -360,17 +444,17 @@ class Game:
             Button(
                 on_click=Button.change_context_right,
                 rect=Rectangle(
-                    position=(270, 495),
+                    position=(450, 495),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
                     size=(160, 40),
                 ),
                 text=Text(
-                    text=self.settings["right"],
+                    text=self.settings["first_player_controls"]["right"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(305, 500)
+                    text_position=(500, 500)
                 ),
             )
         )
@@ -378,22 +462,112 @@ class Game:
             Button(
                 on_click=Button.change_context_pause,
                 rect=Rectangle(
-                    position=(270, 545),
+                    position=(450, 545),
                     color=(Colors.beige),
                     hover_color=(Colors.white),
                     size=(160, 40),
                 ),
                 text=Text(
-                    text=self.settings["pause"],
+                    text=self.settings["first_player_controls"]["pause"],
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
-                    text_position=(305, 550)
+                    text_position=(500, 550)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_up_second,
+                rect=Rectangle(
+                    position=(900, 345),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["second_player_controls"]["up"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(950, 350)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_down_second,
+                rect=Rectangle(
+                    position=(900, 395),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["second_player_controls"]["down"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(950, 400)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_left_second,
+                rect=Rectangle(
+                    position=(900, 445),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["second_player_controls"]["left"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(950, 450)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_right_second,
+                rect=Rectangle(
+                    position=(900, 495),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["second_player_controls"]["right"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(950, 500)
+                ),
+            )
+        )
+        self.buttons.append(
+            Button(
+                on_click=Button.change_context_pause_second,
+                rect=Rectangle(
+                    position=(900, 545),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(160, 40),
+                ),
+                text=Text(
+                    text=self.settings["second_player_controls"]["pause"],
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(950, 550)
                 ),
             )
         )
 
-    def create_pause_menu_elements(self):
+    def create_pause_menu_elements(self, isDualGame: bool):
         self.texts.append(
             Text(
                 font="Corbel",
@@ -421,68 +595,89 @@ class Game:
                 ),
             )
         )
-        self.buttons.append(
-            Button(
-                on_click=Button.pause_save_game,
-                rect=Rectangle(
-                    position=(440, 250),
-                    color=(Colors.beige),
-                    hover_color=(Colors.white),
-                    size=(400, 100),
-                ),
-                text=Text(
-                    text="Save",
-                    font="Corbel",
-                    text_color=Colors.dark,
-                    text_size=35,
-                    text_position=(610, 280)
-                ),
-            )
-        )
-        self.buttons.append(
-            Button(
-                on_click=Button.pause_restart_game,
-                rect=Rectangle(
-                    position=(440, 400),
-                    color=(Colors.beige),
-                    hover_color=(Colors.white),
-                    size=(400, 100),
-                ),
-                text=Text(
-                    text="Restart",
-                    font="Corbel",
-                    text_color=Colors.dark,
-                    text_size=35,
-                    text_position=(600, 430)
-                ),
-            )
-        )
-        self.buttons.append(
-                    Button(
-                        on_click=Button.pause_quit_game,
-                        rect=Rectangle(
-                            position=(440, 550),
-                            color=(Colors.beige),
-                            hover_color=(Colors.white),
-                            size=(400, 100),
-                        ),
-                        text=Text(
-                            text="Quit",
-                            font="Corbel",
-                            text_color=Colors.dark,
-                            text_size=35,
-                            text_position=(610, 580)
-                        ),
-                    )
+        if isDualGame:
+            self.buttons.append(
+                Button(
+                    on_click=Button.pause_dual_restart_game,
+                    rect=Rectangle(
+                        position=(440, 400),
+                        color=(Colors.beige),
+                        hover_color=(Colors.white),
+                        size=(400, 100),
+                    ),
+                    text=Text(
+                        text="Restart",
+                        font="Corbel",
+                        text_color=Colors.dark,
+                        text_size=35,
+                        text_position=(600, 430)
+                    ),
                 )
+            )
+        else:
+            self.buttons.append(
+                Button(
+                    on_click=Button.pause_save_game,
+                    rect=Rectangle(
+                        position=(440, 250),
+                        color=(Colors.beige),
+                        hover_color=(Colors.white),
+                        size=(400, 100),
+                    ),
+                    text=Text(
+                        text="Save",
+                        font="Corbel",
+                        text_color=Colors.dark,
+                        text_size=35,
+                        text_position=(610, 280)
+                    ),
+                )
+            )
 
-    def to_pause_menu(self):
+            self.buttons.append(
+                Button(
+                    on_click=Button.pause_restart_game,
+                    rect=Rectangle(
+                        position=(440, 400),
+                        color=(Colors.beige),
+                        hover_color=(Colors.white),
+                        size=(400, 100),
+                    ),
+                    text=Text(
+                        text="Restart",
+                        font="Corbel",
+                        text_color=Colors.dark,
+                        text_size=35,
+                        text_position=(600, 430)
+                    ),
+                )
+            )
+        self.buttons.append(
+            Button(
+                on_click=Button.pause_quit_game,
+                rect=Rectangle(
+                    position=(440, 550),
+                    color=(Colors.beige),
+                    hover_color=(Colors.white),
+                    size=(400, 100),
+                ),
+                text=Text(
+                    text="Quit",
+                    font="Corbel",
+                    text_color=Colors.dark,
+                    text_size=35,
+                    text_position=(610, 580)
+                ),
+            )
+        )
+
+    def to_pause_menu(self, isDualGame: bool):
         self.context = Context.PAUSE
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
         self.map_images.clear()
-        self.create_pause_menu_elements()
+        self.create_pause_menu_elements(isDualGame)
         self.playing = False
 
     def create_loadable_saves_menu(self, save_list):
@@ -507,7 +702,8 @@ class Game:
 
         y = 200
         for save in save_list:
-            save_name_display = "Map: %s || Date: %s" % (save[0].upper(), save[1].strftime("%m/%d/%Y, %H:%M:%S"))
+            save_name_display = "Map: %s || Date: %s" % (
+                save[0].upper(), save[1].strftime("%m/%d/%Y, %H:%M:%S"))
             self.buttons.append(
                 Button(
                     on_click=Button.play_this_save,
@@ -548,26 +744,52 @@ class Game:
                 )
             )
 
-            y+= 120
+            y += 120
 
     def display_map(self):
         if self.snakes == None or len(self.snakes) < 1:
             return
         self.texts.clear()
+        self.board_height = Screen.BOARD_HEIGHT
+        self.board_width = Screen.BOARD_WIDTH
         self.rectangles.append(
             Rectangle(
                 position=(Screen.START_X, Screen.START_Y),
                 color=(Colors.white),
                 hover_color=None,
-                size=(Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT, Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT),
+                size=(Screen.SQUARE_SIZE * Screen.BOARD_WIDTH,
+                      Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT),
             )
         )
         for snake in self.snakes:
             self.map_images += snake.get_body_imgs()
         for fruit in self.fruits:
             self.map_images.append(fruit.get_fruit_img())
-        self.display_scores()
-    
+        if self.context != Context.DUAL_GAME:
+            self.display_scores()
+
+    def display_dual_map(self):
+        if self.snakes == None or len(self.snakes) < 1:
+            return
+        self.texts.clear()
+        self.board_width = Screen.BOARD_WIDTH_DUAL
+        self.board_height = Screen.BOARD_HEIGHT_DUAL
+        self.rectangles.append(
+            Rectangle(
+                position=(Screen.START_X_DUAL, Screen.START_Y_DUAL),
+                color=(Colors.white),
+                hover_color=None,
+                size=(Screen.SQUARE_SIZE * Screen.BOARD_WIDTH_DUAL,
+                      Screen.SQUARE_SIZE * Screen.BOARD_HEIGHT_DUAL),
+            )
+        )
+        for snake in self.snakes:
+            self.map_images += snake.get_body_imgs()
+        for fruit in self.fruits:
+            self.map_images.append(fruit.get_fruit_img())
+        if self.context != Context.DUAL_GAME:
+            self.display_scores()
+
     def display_scores(self):
         self.texts.append(
             Text(
@@ -581,15 +803,15 @@ class Game:
 
         if len(self.snakes) == 2:
             self.texts.append(
-            Text(
-                text="Score: %s" % self.snakes[1].score,
-                font="Corbel",
-                text_color=Colors.black,
-                text_size=25,
-                text_position=(1000, 50)
-            ),
-        )
-    
+                Text(
+                    text="Score: %s" % self.snakes[1].score,
+                    font="Corbel",
+                    text_color=Colors.black,
+                    text_size=25,
+                    text_position=(1000, 50)
+                ),
+            )
+
     def move_snakes(self) -> tuple[bool, int]:
         for i, snake in enumerate(self.snakes):
             next_head: tuple[int, int]
@@ -610,17 +832,17 @@ class Game:
             if not self.move_snake(snake, next_head):
                 return (False, i)
         return (True, -1)
-    
+
     def move_snake(self, snake: Snake, newhead: tuple[int, int]):
-        # snake our of map
-        if newhead[0] < 0 or newhead[0] >= 40 or newhead[1] < 0 or newhead[1] >= 40:
+        # snake out of map
+        if newhead[0] < 0 or newhead[0] >= self.board_width or newhead[1] < 0 or newhead[1] >= self.board_height:
             return False
-        
+
         # snake hits himself or another snake
         for snk in self.snakes:
             if snk.is_snake(newhead):
                 return False
-        
+
         # snake eats fruit
         eats = False
         for fruit in self.fruits:
@@ -635,7 +857,12 @@ class Game:
         return True
 
     def generate_new_fruit_pos(self):
-        newpos = (round(random.randrange(0, 40)), round(random.randrange(0, 40)))
+        if self.context == Context.DUAL_GAME:
+            newpos = (round(random.randrange(0, 80)),
+                      round(random.randrange(0, 40)))
+        else:
+            newpos = (round(random.randrange(0, 40)),
+                      round(random.randrange(0, 40)))
 
         # check if there is a snake on newpos
         for snake in self.snakes:
@@ -647,7 +874,7 @@ class Game:
             if fruit.is_fruit(newpos):
                 return self.generate_new_fruit_pos()
         return newpos
-    
+
     def find_bot_best_next_head(self, snake: Snake) -> tuple[int, int]:
         nearest_fruit: Fruit = None
         shortest_dist: int = -1
@@ -705,14 +932,14 @@ class Game:
             )
             self.texts.append(
                 Text(
-                    text="%s: %s" %(score["name"], score["score"]),
+                    text="%s: %s" % (score["name"], score["score"]),
                     font="Corbel",
                     text_color=Colors.dark,
                     text_size=35,
                     text_position=(170, y + 15)
                 ),
             )
-            y+= 60
+            y += 60
 
     def player_name(self, event):
         if event.key == pygame.K_BACKSPACE and len(self.player) > 0:
@@ -775,30 +1002,62 @@ class Game:
         self.map_images.clear()
         data = Saves.load_save(save_name)
         self.snakes.append(Snake(
+            screen_start_x=Screen.START_X,
+            screen_start_y=Screen.START_Y,
             direction=data["direction"],
             init_snake=data["snake"],
-            keys=self.settings
+            keys=self.settings["first_player_controls"]
         ))
-        self.fruits.append(Fruit((data["fruit"]["x"], data["fruit"]["y"])))
+        self.fruits.append(
+            Fruit(
+                Screen.START_X,
+                Screen.START_Y,
+                (data["fruit"]["x"], data["fruit"]["y"])
+            )
+        )
         self.display_map()
         self.playing = True
 
     def new_game(self):
         self.playing = True
         self.gameover = False
-    
+
         self.snakes.append(Snake(
+            screen_start_x=Screen.START_X,
+            screen_start_y=Screen.START_Y,
+            sprites={
+                "head_down": Assets.head_down,
+                "head_up": Assets.head_up,
+                "head_right": Assets.head_right,
+                "head_left": Assets.head_left,
+                "tail_down": Assets.tail_down,
+                "tail_up": Assets.tail_up,
+                "tail_right": Assets.tail_right,
+                "tail_left": Assets.tail_left,
+                "body_vertical": Assets.body_vertical,
+                "body_horizontal": Assets.body_horizontal,
+                "body_topright": Assets.body_topright,
+                "body_topleft": Assets.body_topleft,
+                "body_bottomright": Assets.body_bottomright,
+                "body_bottomleft": Assets.body_bottomleft,
+            },
             direction="up",
             init_snake=[
                 {"x": 40/2, "y": 40/2},
                 {"x": 40/2, "y": 40/2+1},
                 {"x": 40/2, "y": 40/2+2}
             ],
-            keys=self.settings
+            keys=self.settings["first_player_controls"]
         ))
 
-        self.fruits.append(Fruit(self.generate_new_fruit_pos()))
-    
+        self.fruits.append(
+            Fruit(
+                Screen.START_X,
+                Screen.START_Y,
+                self.generate_new_fruit_pos()
+            )
+        )
+
         self.context = Context.IN_GAME
         self.buttons.clear()
         self.rectangles.clear()
@@ -806,11 +1065,110 @@ class Game:
         self.map_images.clear()
         self.display_map()
 
+    def new_dual_game(self):
+        self.playing = True
+        self.gameover = False
+
+        self.snakes.append(Snake(
+            screen_start_x=Screen.START_X_DUAL,
+            screen_start_y=Screen.START_Y_DUAL,
+            sprites={
+                "head_down": Assets.head_down,
+                "head_up": Assets.head_up,
+                "head_right": Assets.head_right,
+                "head_left": Assets.head_left,
+                "tail_down": Assets.tail_down,
+                "tail_up": Assets.tail_up,
+                "tail_right": Assets.tail_right,
+                "tail_left": Assets.tail_left,
+                "body_vertical": Assets.body_vertical,
+                "body_horizontal": Assets.body_horizontal,
+                "body_topright": Assets.body_topright,
+                "body_topleft": Assets.body_topleft,
+                "body_bottomright": Assets.body_bottomright,
+                "body_bottomleft": Assets.body_bottomleft,
+            },
+            direction="down",
+            init_snake=[
+                {"x": 2, "y": 3},
+                {"x": 2, "y": 2},
+                {"x": 2, "y": 1}
+            ],
+            keys=self.settings["first_player_controls"]
+        ))
+
+        self.snakes.append(Snake(
+            screen_start_x=Screen.START_X_DUAL,
+            screen_start_y=Screen.START_Y_DUAL,
+            sprites={
+                "head_down": Assets.head_down_second,
+                "head_up": Assets.head_up_second,
+                "head_right": Assets.head_right_second,
+                "head_left": Assets.head_left_second,
+                "tail_down": Assets.tail_down_second,
+                "tail_up": Assets.tail_up_second,
+                "tail_right": Assets.tail_right_second,
+                "tail_left": Assets.tail_left_second,
+                "body_vertical": Assets.body_vertical_second,
+                "body_horizontal": Assets.body_horizontal_second,
+                "body_topright": Assets.body_topright_second,
+                "body_topleft": Assets.body_topleft_second,
+                "body_bottomright": Assets.body_bottomright_second,
+                "body_bottomleft": Assets.body_bottomleft_second,
+            },
+            direction="up",
+            init_snake=[
+                {"x": 78, "y": 37},
+                {"x": 78, "y": 38},
+                {"x": 78, "y": 39}
+            ],
+            keys=self.settings["second_player_controls"]
+        ))
+        self.fruits.append(
+            Fruit(
+                Screen.START_X_DUAL,
+                Screen.START_Y_DUAL,
+                self.generate_new_fruit_pos()
+            )
+        )
+        self.fruits.append(
+            Fruit(
+                Screen.START_X_DUAL,
+                Screen.START_Y_DUAL,
+                self.generate_new_fruit_pos()
+            )
+        )
+
+        self.context = Context.DUAL_GAME
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.map_images.clear()
+        self.display_dual_map()
+
     def new_game_autoplayer(self):
         self.playing = True
         self.gameover = False
 
         self.snakes.append(Snake(
+            screen_start_x=Screen.START_X,
+            screen_start_y=Screen.START_Y,
+            sprites={
+                "head_down": Assets.head_down,
+                "head_up": Assets.head_up,
+                "head_right": Assets.head_right,
+                "head_left": Assets.head_left,
+                "tail_down": Assets.tail_down,
+                "tail_up": Assets.tail_up,
+                "tail_right": Assets.tail_right,
+                "tail_left": Assets.tail_left,
+                "body_vertical": Assets.body_vertical,
+                "body_horizontal": Assets.body_horizontal,
+                "body_topright": Assets.body_topright,
+                "body_topleft": Assets.body_topleft,
+                "body_bottomright": Assets.body_bottomright,
+                "body_bottomleft": Assets.body_bottomleft,
+            },
             direction="up",
             init_snake=[
                 {"x": 39, "y": 37},
@@ -819,9 +1177,14 @@ class Game:
             ],
             is_bot=True
         ))
+        self.fruits.append(
+            Fruit(
+                Screen.START_X,
+                Screen.START_Y,
+                self.generate_new_fruit_pos()
+            )
+        )
 
-        self.fruits.append(Fruit(self.generate_new_fruit_pos()))
-    
         self.context = Context.IN_GAME
         self.buttons.clear()
         self.rectangles.clear()
@@ -845,7 +1208,8 @@ class Game:
     def load_score(self):
         try:
             self.ranking = load(open(".ranking.json"))
-            self.ranking["ranking"].sort(key=lambda x: x["score"], reverse=True)
+            self.ranking["ranking"].sort(
+                key=lambda x: x["score"], reverse=True)
         except Exception as e:
             ranking = {
                 "ranking": []
@@ -860,11 +1224,20 @@ class Game:
             settings = {
                 "music": 0,
                 "effects": 100,
-                "up": "up",
-                "down": "down",
-                "left": "left",
-                "right": "right",
-                "pause": "space"
+                "first_player_controls": {
+                    "up": "w",
+                    "down": "s",
+                    "left": "a",
+                    "right": "d",
+                    "pause": "escape"
+                },
+                "second_player_controls": {
+                    "up": "up",
+                    "down": "down",
+                    "left": "left",
+                    "right": "right",
+                    "pause": "return"
+                },
             }
             settings_file = open('settings.json', 'w')
             dump(settings, settings_file)
@@ -872,8 +1245,11 @@ class Game:
         self.music_volume = self.settings["music"] / 100
         self.effects_volume = self.settings["effects"] / 100
 
-    def update_settings(self, key, value):
-        self.settings[key] = value
+    def update_settings(self, key, value, path=None):
+        if path:
+            self.settings[path][key] = value
+        else:
+            self.settings[key] = value
         dump(self.settings, open('settings.json', 'w'))
 
     def save_rank(self):
@@ -881,7 +1257,8 @@ class Game:
             return
         if len(self.ranking["ranking"]) >= 10:
             self.ranking["ranking"].pop()
-        self.ranking["ranking"].append({"name": self.player, "score": self.final_score})
+        self.ranking["ranking"].append(
+            {"name": self.player, "score": self.final_score})
         self.ranking["ranking"].sort(key=lambda x: x["score"], reverse=True)
         self.player = ''
         ranking_file = open('.ranking.json', 'w')
@@ -909,7 +1286,7 @@ class Game:
             )
         )
 
-    def loose(self, event, is_bot):
+    def loose(self, is_bot):
         x, y = self.screen.get_size()
         self.context = Context.MAIN_MENU
         high = False
@@ -928,7 +1305,7 @@ class Game:
         )
         self.texts.append(
             Text(
-                text="Score: %s" % self.final_score ,
+                text="Score: %s" % self.final_score,
                 font="Corbel",
                 text_color=Colors.dark,
                 text_size=50,
@@ -947,7 +1324,7 @@ class Game:
             if high:
                 self.texts.append(
                     Text(
-                        text="Enter your name: %s" % self.final_score ,
+                        text="Enter your name: %s" % self.final_score,
                         font="Corbel",
                         text_color=Colors.dark,
                         text_size=50,
@@ -969,7 +1346,8 @@ class Game:
             self.add_rank_button(False)
 
     def change_binding_up(self, key):
-        self.update_settings("up", key)
+        if not self.check_binding_used(key):
+            self.update_settings("up", key, "first_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -978,7 +1356,8 @@ class Game:
         return
 
     def change_binding_down(self, key):
-        self.update_settings("down", key)
+        if not self.check_binding_used(key):
+            self.update_settings("down", key, "first_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -987,7 +1366,8 @@ class Game:
         return
 
     def change_binding_left(self, key):
-        self.update_settings("left", key)
+        if not self.check_binding_used(key):
+            self.update_settings("left", key, "first_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -996,7 +1376,8 @@ class Game:
         return
 
     def change_binding_right(self, key):
-        self.update_settings("right", key)
+        if not self.check_binding_used(key):
+            self.update_settings("right", key, "first_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -1005,7 +1386,58 @@ class Game:
         return
 
     def change_binding_pause(self, key):
-        self.update_settings("pause", key)
+        if not self.check_binding_used(key):
+            self.update_settings("pause", key, "first_player_controls")
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_up_second(self, key):
+        if not self.check_binding_used(key):
+            self.update_settings("up", key, "second_player_controls")
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_down_second(self, key):
+        if not self.check_binding_used(key):
+            self.update_settings("down", key, "second_player_controls")
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_left_second(self, key):
+        if not self.check_binding_used(key):
+            self.update_settings("left", key, "second_player_controls")
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_right_second(self, key):
+        if not self.check_binding_used(key):
+            self.update_settings("right", key, "second_player_controls")
+        self.buttons.clear()
+        self.rectangles.clear()
+        self.texts.clear()
+        self.create_options_menu_elements()
+        self.context = Context.OPTIONS
+        return
+
+    def change_binding_pause_second(self, key):
+        if not self.check_binding_used(key):
+            self.update_settings("pause", key, "second_player_controls")
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
@@ -1026,3 +1458,24 @@ class Game:
                     self.change_binding_right(pygame.key.name(event.key))
                 case Context.OPTIONS_WAITING_INPUT_PAUSE:
                     self.change_binding_pause(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_UP_SECOND:
+                    self.change_binding_up_second(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_DOWN_SECOND:
+                    self.change_binding_down_second(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_LEFT_SECOND:
+                    self.change_binding_left_second(pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_RIGHT_SECOND:
+                    self.change_binding_right_second(
+                        pygame.key.name(event.key))
+                case Context.OPTIONS_WAITING_INPUT_PAUSE_SECOND:
+                    self.change_binding_pause_second(
+                        pygame.key.name(event.key))
+
+    def check_binding_used(self, new_key):
+        for key in self.settings["first_player_controls"]:
+            if (self.settings["first_player_controls"][key] == new_key):
+                return True
+        for key in self.settings["second_player_controls"]:
+            if (self.settings["second_player_controls"][key] == new_key):
+                return True
+        return False
