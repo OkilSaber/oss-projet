@@ -43,7 +43,7 @@ class Game:
 
     final_score: int = 0
 
-    speed = 75
+    speed = 60
     ranking = {"ranking": []}
     playing = bool
     gameover = False
@@ -857,8 +857,12 @@ class Game:
         return True
 
     def generate_new_fruit_pos(self):
-        newpos = (round(random.randrange(0, 40)),
-                  round(random.randrange(0, 40)))
+        if self.context == Context.DUAL_GAME:
+            newpos = (round(random.randrange(0, 80)),
+                      round(random.randrange(0, 40)))
+        else:
+            newpos = (round(random.randrange(0, 40)),
+                      round(random.randrange(0, 40)))
 
         # check if there is a snake on newpos
         for snake in self.snakes:
@@ -1004,7 +1008,13 @@ class Game:
             init_snake=data["snake"],
             keys=self.settings["first_player_controls"]
         ))
-        self.fruits.append(Fruit((data["fruit"]["x"], data["fruit"]["y"])))
+        self.fruits.append(
+            Fruit(
+                Screen.START_X,
+                Screen.START_Y,
+                (data["fruit"]["x"], data["fruit"]["y"])
+            )
+        )
         self.display_map()
         self.playing = True
 
@@ -1040,7 +1050,13 @@ class Game:
             keys=self.settings["first_player_controls"]
         ))
 
-        self.fruits.append(Fruit(self.generate_new_fruit_pos()))
+        self.fruits.append(
+            Fruit(
+                Screen.START_X,
+                Screen.START_Y,
+                self.generate_new_fruit_pos()
+            )
+        )
 
         self.context = Context.IN_GAME
         self.buttons.clear()
@@ -1102,15 +1118,26 @@ class Game:
             },
             direction="up",
             init_snake=[
-                {"x": 38, "y": 37},
-                {"x": 38, "y": 38},
-                {"x": 38, "y": 39}
+                {"x": 78, "y": 37},
+                {"x": 78, "y": 38},
+                {"x": 78, "y": 39}
             ],
             keys=self.settings["second_player_controls"]
         ))
-
-        self.fruits.append(Fruit(self.generate_new_fruit_pos()))
-        self.fruits.append(Fruit(self.generate_new_fruit_pos()))
+        self.fruits.append(
+            Fruit(
+                Screen.START_X_DUAL,
+                Screen.START_Y_DUAL,
+                self.generate_new_fruit_pos()
+            )
+        )
+        self.fruits.append(
+            Fruit(
+                Screen.START_X_DUAL,
+                Screen.START_Y_DUAL,
+                self.generate_new_fruit_pos()
+            )
+        )
 
         self.context = Context.DUAL_GAME
         self.buttons.clear()
@@ -1150,8 +1177,13 @@ class Game:
             ],
             is_bot=True
         ))
-
-        self.fruits.append(Fruit(self.generate_new_fruit_pos()))
+        self.fruits.append(
+            Fruit(
+                Screen.START_X,
+                Screen.START_Y,
+                self.generate_new_fruit_pos()
+            )
+        )
 
         self.context = Context.IN_GAME
         self.buttons.clear()
