@@ -1049,7 +1049,8 @@ class Game:
             ],
             keys=self.settings["first_player_controls"]
         ))
-
+        #issue 40
+        self.fruits.clear()
         self.fruits.append(
             Fruit(
                 Screen.START_X,
