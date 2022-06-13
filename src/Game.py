@@ -995,19 +995,38 @@ class Game:
         self.to_load()
 
     def play_game_from_load(self, save_name):
+        print("started1")
         self.context = Context.IN_GAME
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
         self.map_images.clear()
         data = Saves.load_save(save_name)
+        print("checked1")
         self.snakes.append(Snake(
             screen_start_x=Screen.START_X,
             screen_start_y=Screen.START_Y,
+            sprites={
+                "head_down": Assets.head_down,
+                "head_up": Assets.head_up,
+                "head_right": Assets.head_right,
+                "head_left": Assets.head_left,
+                "tail_down": Assets.tail_down,
+                "tail_up": Assets.tail_up,
+                "tail_right": Assets.tail_right,
+                "tail_left": Assets.tail_left,
+                "body_vertical": Assets.body_vertical,
+                "body_horizontal": Assets.body_horizontal,
+                "body_topright": Assets.body_topright,
+                "body_topleft": Assets.body_topleft,
+                "body_bottomright": Assets.body_bottomright,
+                "body_bottomleft": Assets.body_bottomleft,
+            },
             direction=data["direction"],
             init_snake=data["snake"],
             keys=self.settings["first_player_controls"]
         ))
+        print("checked2")
         self.fruits.append(
             Fruit(
                 Screen.START_X,
