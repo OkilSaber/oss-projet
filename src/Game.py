@@ -995,14 +995,12 @@ class Game:
         self.to_load()
 
     def play_game_from_load(self, save_name):
-        print("started1")
         self.context = Context.IN_GAME
         self.buttons.clear()
         self.rectangles.clear()
         self.texts.clear()
         self.map_images.clear()
         data = Saves.load_save(save_name)
-        print("checked1")
         self.snakes.append(Snake(
             screen_start_x=Screen.START_X,
             screen_start_y=Screen.START_Y,
@@ -1026,7 +1024,7 @@ class Game:
             init_snake=data["snake"],
             keys=self.settings["first_player_controls"]
         ))
-        print("checked2")
+        self.fruits.clear()
         self.fruits.append(
             Fruit(
                 Screen.START_X,
